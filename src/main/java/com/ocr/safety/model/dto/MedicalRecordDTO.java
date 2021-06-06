@@ -1,9 +1,10 @@
-package com.ocr.safety.model;
+package com.ocr.safety.model.dto;
 
 import java.util.List;
 
+import com.ocr.safety.model.MedicalRecord;
 
-public class MedicalRecord {
+public class MedicalRecordDTO {
 	
 	private String firstName;
 	
@@ -15,21 +16,22 @@ public class MedicalRecord {
 	
 	private List<String> allergies;
 	
-	public MedicalRecord() {
+	public MedicalRecordDTO() {
 		
 	}
-	
 
-	public MedicalRecord(String firstName, String lastName, String birthDate, List<String> medications,
-			List<String> allergies) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.birthDate = birthDate;
-		this.medications = medications;
-		this.allergies = allergies;
+	public MedicalRecordDTO(MedicalRecord medicalrecord) {
+		
+		this.setFirstName(medicalrecord.getFirstName()); 
+		
+		this.setLastName(medicalrecord.getLastName()); 
+		
+		this.setBirthDate(medicalrecord.getBirthDate()); 
+		
+		this.setMedications(medicalrecord.getMedications()); 
+		
+		this.setAllergies(medicalrecord.getAllergies());
 	}
-
 
 	public String getFirstName() {
 		return firstName;

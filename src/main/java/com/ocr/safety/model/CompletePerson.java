@@ -1,7 +1,8 @@
 package com.ocr.safety.model;
 
+import java.util.List;
 
-public class Person {
+public class CompletePerson {
 	
 	private String firstName;
 	
@@ -17,12 +18,21 @@ public class Person {
 	
 	private String email;
 	
-	public Person() {
+	private Integer age;
+	
+	private String birthDate;
+	
+	private List<String> medications;
+	
+	private List<String> allergies;
+	
+	public CompletePerson() {
+		
 	}
 
-	public Person(String firstName, String lastName, String address, String city, String zip, String phone,
-			String email) {
-		super();
+	public CompletePerson(String firstName, String lastName, String address, String city, String zip, String phone,
+			String email, Integer age, String birthDate, List<String> medications, List<String> allergies) {
+		
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -30,6 +40,10 @@ public class Person {
 		this.zip = zip;
 		this.phone = phone;
 		this.email = email;
+		this.age = age;
+		this.birthDate = birthDate;
+		this.medications = medications;
+		this.allergies = allergies;
 	}
 
 	public String getFirstName() {
@@ -88,11 +102,37 @@ public class Person {
 		this.email = email;
 	}
 
-	@Override
-	public String toString() {
-		return "Person [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city=" + city
-				+ ", zip=" + zip + ", phone=" + phone + ", email=" + email + "]";
+	public Integer getAge() {
+		return age;
 	}
 
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public String getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public List<String> getMedications() {
+		return medications;
+	}
+
+	public void setMedications(List<String> medications) {
+		this.medications = medications;
+	}
+
+	public List<String> getAllergies() {
+		return allergies;
+	}
+
+	public void setAllergies(List<String> allergies) {
+		this.allergies = allergies;
+	}
+	
 
 }

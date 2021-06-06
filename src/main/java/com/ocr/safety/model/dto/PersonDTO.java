@@ -1,7 +1,8 @@
-package com.ocr.safety.model;
+package com.ocr.safety.model.dto;
 
+import com.ocr.safety.model.Person;
 
-public class Person {
+public class PersonDTO {
 	
 	private String firstName;
 	
@@ -17,19 +18,26 @@ public class Person {
 	
 	private String email;
 	
-	public Person() {
+	public PersonDTO() {
+		
 	}
 
-	public Person(String firstName, String lastName, String address, String city, String zip, String phone,
-			String email) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.address = address;
-		this.city = city;
-		this.zip = zip;
-		this.phone = phone;
-		this.email = email;
+	public PersonDTO(Person person) {
+		
+		this.setFirstName(person.getFirstName());
+		
+		this.setLastName(person.getLastName());
+		
+		this.setAddress(person.getAddress());
+		
+		this.setCity(person.getCity()); 
+		
+		this.setZip(person.getZip());
+		
+		this.setPhone(person.getPhone()); 
+		
+		this.setEmail(person.getEmail());
+		
 	}
 
 	public String getFirstName() {
@@ -68,8 +76,8 @@ public class Person {
 		return zip;
 	}
 
-	public void setZip(String zip) {
-		this.zip = zip;
+	public void setZip(String Zip) {
+		this.zip = Zip;
 	}
 
 	public String getPhone() {
@@ -87,12 +95,5 @@ public class Person {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	@Override
-	public String toString() {
-		return "Person [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city=" + city
-				+ ", zip=" + zip + ", phone=" + phone + ", email=" + email + "]";
-	}
-
-
+	
 }

@@ -1,14 +1,11 @@
 package com.ocr.safety.controller;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,25 +16,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.ocr.safety.model.AllData;
 import com.ocr.safety.model.FireStation;
 import com.ocr.safety.model.MedicalRecord;
 import com.ocr.safety.model.Person;
+import com.ocr.safety.model.dto.FireStationDTO;
 
 @RestController
 public class PersonController {
 	
-	@GetMapping(value = "/allData")
-	public static Map<String, List<?>> ToutesLesDonnées() {
+	@GetMapping(value = "/")
+	public static Map<String, AllData> ToutesLesDonnées() {
 		
-		Map<String, List<?>> convertData = null;
+		Map<String, AllData> convertData = null;
 		
-		try( BufferedReader br = new BufferedReader(
-				new FileReader("/Users/kingteff/Documents/workspace-spring-tool-suite-4-4.9.0.RELEASE/safetynet/src/main/resources/data.json"));
-				) {
+		try( JsonReader reader = new JsonReader(new InputStreamReader(
+				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))) {
 			
     	    Gson gson = new Gson();
     	    
-    	    convertData = gson.fromJson(br, Map.class);
+    	    convertData = gson.fromJson(reader, Map.class);
 
     	} catch (Exception ex) {
     	    ex.printStackTrace();
@@ -53,7 +51,7 @@ public class PersonController {
 		List<Person> ens = null;
 		
 		try(JsonReader reader = new JsonReader(new InputStreamReader(
-				new FileInputStream("/Users/kingteff/Documents/workspace-spring-tool-suite-4-4.9.0.RELEASE/safetynet/src/main/resources/data.json"),"UTF-8"))){
+				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))){
 	
     	    Gson gson = new Gson();
     	    
@@ -69,127 +67,143 @@ public class PersonController {
     	} catch (Exception ex) {
     	    ex.printStackTrace();
     	}
-	
-		
-
 		return ens;
 	}
 	
+	
+//	@GetMapping(value = "/firestation")
+//	public List<FireStation> listeDesCasernes() {
+//		
+//		List<List<FireStation>> ensembleDesCasernes = null;
+//		
+//		List<FireStation> fireStations = null;
+//		
+//		try(JsonReader reader = new JsonReader(new InputStreamReader(
+//				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))){
+//			
+//    	    Gson gson = new Gson();
+//    	    
+//    	    Map<String, List<FireStation>> dataJSON = gson.fromJson(reader, Map.class);
+//    	    
+//    	    ensembleDesCasernes
+//    	    = dataJSON.entrySet().stream().filter(s -> s.getKey().contains("firestations"))
+//    	    .map(Map.Entry::getValue).collect(Collectors.toList());
+//    	    
+//    	    fireStations = ensembleDesCasernes.stream().flatMap(e -> e.stream())
+//    	    		.collect(Collectors.toList());
+//
+//    	} catch (Exception ex) {
+//    		
+//    	    ex.printStackTrace();
+//    	}
+//		
+//		return fireStations;
+//	}
+	
+	
+	
 	@GetMapping(value = "/firestation")
-	public List<FireStation> listeDesCasernes() {
+	public List<FireStation> listeDesCasernesFiltrees(FireStationDTO input) {
 		
-		Map<String, List<FireStation>> convertFireStation = null;
+		List<List<FireStation>> ensembleDesCasernes = null;
 		
 		List<FireStation> fireStations = null;
-		
-		try( BufferedReader br = new BufferedReader(
-				new FileReader("/Users/kingteff/Documents/workspace-spring-tool-suite-4-4.9.0.RELEASE/safetynet/src/main/resources/data.json"));
-				) {
+
+		try(JsonReader reader = new JsonReader(new InputStreamReader(
+				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))){
 			
-    	    //create Gson instance
     	    Gson gson = new Gson();
     	    
-    	    /*
-    	     * convert JSON file to map
-    	     */
-//    	    convertPerson = ((Collection<Person>) gson.fromJson(br, Map.class)).stream().collect(Collectors.);
-    	    convertFireStation = gson.fromJson(br, Map.class);
+    	    Type fireStationType = new TypeToken<HashMap<String, List<FireStation>>>(){}.getType();
     	    
-    	    //print map entries
-    	    for (Entry<String, List<FireStation>> entry : convertFireStation.entrySet()) {
-    	    	if(entry.getKey().contains("firestations")) {
-    	    		fireStations = entry.getValue();
-
-    	    	}
+    	    HashMap<String, List<FireStation>> dataJSON = gson.fromJson(reader, fireStationType);
+    	    
+    	    ensembleDesCasernes = dataJSON.entrySet().stream().filter(s -> s.getKey().contains("firestations"))
+    	    .map(Map.Entry::getValue).collect(Collectors.toList());
+    	    
+    	    
+    	    fireStations = ensembleDesCasernes.stream().flatMap(e -> e.stream())
+    	    		.collect(Collectors.toList());
+    	    
+    	    if(input.getStationId() != null) {
+    	    	fireStations = fireStations.stream().filter(e -> e.getStation() == input.getStationId())
+    	    	.collect(Collectors.toList());
     	    }
 
-    	} catch (Exception ex) {
+    	} catch(Exception ex) {
+    		
     	    ex.printStackTrace();
     	}
+		
+		System.out.println(input);
+
 		return fireStations;
 	}
+	
+	
+	
 	
 	@GetMapping(value = "/medicalRecord")
 	public List<MedicalRecord> infosMedicales() {
 		
-		Map<String, List<MedicalRecord>> convertMedicalRecord = null;
+		List<List<MedicalRecord>> antecedantsMedicals = null;
 		
 		List<MedicalRecord> medicalRecords = null;
 		
-		try( BufferedReader br = new BufferedReader(
-				new FileReader("/Users/kingteff/Documents/workspace-spring-tool-suite-4-4.9.0.RELEASE/safetynet/src/main/resources/data.json"));
-				) {
+		try(JsonReader reader = new JsonReader(new InputStreamReader(
+				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))){
 			
-    	    //create Gson instance
     	    Gson gson = new Gson();
     	    
-    	    /*
-    	     * convert JSON file to map
-    	     */
-//    	    convertPerson = ((Collection<Person>) gson.fromJson(br, Map.class)).stream().collect(Collectors.);
-    	    convertMedicalRecord = gson.fromJson(br, Map.class);
+    	    Map<String, List<MedicalRecord>> dataJSON = gson.fromJson(reader, Map.class);
     	    
-    	    //print map entries
-    	    for (Entry<String, List<MedicalRecord>> entry : convertMedicalRecord.entrySet()) {
-    	    	if(entry.getKey().contains("medicalrecords")) {
-    	    		medicalRecords = entry.getValue();
-
-    	    	}
-    	    }
+    	    antecedantsMedicals
+    	    = dataJSON.entrySet().stream().filter(s -> s.getKey().contains("medicalrecords"))
+    	    .map(Map.Entry::getValue).collect(Collectors.toList());
+    	    
+    	    medicalRecords = antecedantsMedicals.stream().flatMap(e -> e.stream())
+    	    		.collect(Collectors.toList());
 
     	} catch (Exception ex) {
+    		
     	    ex.printStackTrace();
     	}
+		
 		return medicalRecords;
+		
 	}
 	
 	
 	@PostMapping(value = "/person")
-	public List<Person> ajouterUnePersonne(@RequestBody Person person) {
+	List<Person> ajouterUnePersonne(@RequestBody Person person) {
 		
-		Map<String, List<Person>> convertPerson = null;
+		List<List<Person>> ensembleDePerson = null;
 		
-		List<Person> persons = null;
+		List<Person> ens = null;
 		
-		Person pr = new Person();
-		
-		pr.setFirstName("Teff");
-		pr.setLastName("King");
-		pr.setAddress("1509 Culver St");
-		pr.setCity("Culver");
-		pr.setZip((long) 97451);
-		pr.setPhone("123-456-7890");
-		pr.setEmail("tatayoyo@email.com");
-		
-		try( BufferedReader br = new BufferedReader(
-				new FileReader("/Users/kingteff/Documents/workspace-spring-tool-suite-4-4.9.0.RELEASE/safetynet/src/main/resources/data.json"));
-				) {
-			
-    	    //create Gson instance
+		try(JsonReader reader = new JsonReader(new InputStreamReader(
+				new FileInputStream("/Users/kingteff/Documents/workspace-sts/git/safetynet/src/main/resources/data.json"),"UTF-8"))){
+	
     	    Gson gson = new Gson();
     	    
-    	    /*
-    	     * convert JSON file to map
-    	     */
-//    	    convertPerson = ((Collection<Person>) gson.fromJson(br, Map.class)).stream().collect(Collectors.);
-    	    convertPerson = gson.fromJson(br, Map.class);
+    	    Map<String, List<Person>> dataJSON = gson.fromJson(reader, Map.class);
     	    
-    	    //print map entries
-    	    for (Entry<String, List<Person>> entry : convertPerson.entrySet()) {
-    	    	
-    	    	if(entry.getKey().contains("persons")) {
-    	    		
-        	        persons = entry.getValue();
-    	    	}
-    	    }
-
+    	    ensembleDePerson 
+    	    = dataJSON.entrySet().stream().filter(s -> s.getKey().contains("persons"))
+    	    .map(Map.Entry::getValue).collect(Collectors.toList());
+    	    
+    	    ens = ensembleDePerson.stream().flatMap(e -> e.stream())
+    	    		.collect(Collectors.toList());
+    	    
+    	     ens.add(person);
+    	     
+    	    
     	} catch (Exception ex) {
+    		
     	    ex.printStackTrace();
     	}
 		
-		persons.add(pr);
-		
-		return persons;
-		
+	     return ens;
+
 	}
 }
