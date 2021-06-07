@@ -10,7 +10,7 @@ public class MedicalRecordDTO {
 	
 	private String lastName;
 	
-	private String birthDate;
+	private String birthdate;
 	
 	private List<String> medications;
 	
@@ -26,7 +26,7 @@ public class MedicalRecordDTO {
 		
 		this.setLastName(medicalrecord.getLastName()); 
 		
-		this.setBirthDate(medicalrecord.getBirthDate()); 
+		this.setBirthdate(medicalrecord.getBirthdate()); 
 		
 		this.setMedications(medicalrecord.getMedications()); 
 		
@@ -49,12 +49,12 @@ public class MedicalRecordDTO {
 		this.lastName = lastName;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
+	public String getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthdate(String birthdate) {
+		this.birthdate = birthdate;
 	}
 
 	public List<String> getMedications() {

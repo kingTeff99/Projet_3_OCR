@@ -287,20 +287,19 @@ public class DataTreatmentImpl implements DataTreatment {
 				loadFile().setFirestations(new ArrayList<>());
 			
 			}
-		
 		}
 		return false;
 	}
 
 	@Override
-	public Integer getAgeWithBirthDate(String birthDate) {
+	public Integer getAgeWithBirthDate(String birthdate) {
 		
 		LocalDate today = LocalDate.now();
 		
 	    DateTimeFormatter formatter = DateTimeFormatter
-	      .ofPattern("dd/MM/yyyy");
+	      .ofPattern("MM/dd/yyyy");
 	    
-	    LocalDate parsedBirthDate = LocalDate.parse(birthDate, formatter);
+	    LocalDate parsedBirthDate = LocalDate.parse(birthdate, formatter);
 	    
 	    return Period.between(parsedBirthDate, today).getYears();
 	    
@@ -316,9 +315,8 @@ public class DataTreatmentImpl implements DataTreatment {
 				if(Objects.equals(med.getFirstName(), prototype.getFirstName()) 
 						&& Objects.equals(med.getLastName(), prototype.getLastName())) {
 					
-					return getAgeWithBirthDate(med.getBirthDate());
+					return getAgeWithBirthDate(med.getBirthdate());
 				}
-				
 			}
 		}
 		return 0;

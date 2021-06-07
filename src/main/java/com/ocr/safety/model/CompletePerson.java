@@ -26,13 +26,19 @@ public class CompletePerson {
 	
 	private List<String> allergies;
 	
-	public CompletePerson() {
-		
+	private Integer station;
+	
+	public CompletePerson(String firstName, String lastName, String address, Integer age) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.age = age;
 	}
 
 	public CompletePerson(String firstName, String lastName, String address, String city, String zip, String phone,
-			String email, Integer age, String birthDate, List<String> medications, List<String> allergies) {
-		
+			String email, Integer age, String birthDate, List<String> medications, List<String> allergies,
+			Integer station) {
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -44,8 +50,10 @@ public class CompletePerson {
 		this.birthDate = birthDate;
 		this.medications = medications;
 		this.allergies = allergies;
+		this.setStation(station);
 	}
 
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -132,6 +140,16 @@ public class CompletePerson {
 
 	public void setAllergies(List<String> allergies) {
 		this.allergies = allergies;
+	}
+
+
+	public Integer getStation() {
+		return station;
+	}
+
+
+	public void setStation(Integer station) {
+		this.station = station;
 	}
 	
 

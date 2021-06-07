@@ -38,12 +38,6 @@ public interface DataTreatment {
 
 	FireStation saveFireStation(FireStation prototype);
 	
-	//FireStation updateFireStation(FireStation prototype);
-	//trouver cmt faire la maj du nb de la caserne associée à une adresse
-	
 	boolean deleteFireStation(FireStation prototype);
 	
-	
-
-
 }

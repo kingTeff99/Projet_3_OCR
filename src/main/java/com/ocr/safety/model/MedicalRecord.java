@@ -9,7 +9,7 @@ public class MedicalRecord {
 	
 	private String lastName;
 	
-	private String birthDate;
+	private String birthdate;
 	
 	private List<String> medications;
 	
@@ -20,12 +20,12 @@ public class MedicalRecord {
 	}
 	
 
-	public MedicalRecord(String firstName, String lastName, String birthDate, List<String> medications,
+	public MedicalRecord(String firstName, String lastName, String birthdate, List<String> medications,
 			List<String> allergies) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.birthDate = birthDate;
+		this.birthdate = birthdate;
 		this.medications = medications;
 		this.allergies = allergies;
 	}
@@ -47,12 +47,12 @@ public class MedicalRecord {
 		this.lastName = lastName;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
+	public String getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthdate(String birthdate) {
+		this.birthdate = birthdate;
 	}
 
 	public List<String> getMedications() {
