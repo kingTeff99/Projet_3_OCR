@@ -6,15 +6,15 @@ public class ChildAlert {
 	
 	private String address;
 	
-	private List<CompletePerson> children;
+	private List<ChildAlertPerson> children;
 	
-	private List<CompletePerson> adults;
+	private List<ChildAlertPerson> adults;
 
-	public ChildAlert(String address, List<CompletePerson> children, List<CompletePerson> adults) {
+	public ChildAlert(String address, List<ChildAlertPerson> theChildren, List<ChildAlertPerson> theAdults) {
 		super();
 		this.address = address;
-		this.children = children;
-		this.adults = adults;
+		this.children = theChildren;
+		this.adults = theAdults;
 	}
 
 	public String getAddress() {
@@ -25,20 +25,21 @@ public class ChildAlert {
 		this.address = address;
 	}
 
-	public List<CompletePerson> getChildren() {
+	public List<ChildAlertPerson> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<CompletePerson> children) {
+	public void setChildren(List<ChildAlertPerson> children) {
 		this.children = children;
 	}
 
-	public List<CompletePerson> getAdults() {
+	public List<ChildAlertPerson> getAdults() {
 		return adults;
 	}
 
-	public void setAdults(List<CompletePerson> adults) {
+	public void setAdults(List<ChildAlertPerson> adults) {
 		this.adults = adults;
 	}
-
+	
+	
 }

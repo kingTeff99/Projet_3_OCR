@@ -20,13 +20,15 @@ public class CompletePerson {
 	
 	private Integer age;
 	
-	private String birthDate;
-	
 	private List<String> medications;
 	
 	private List<String> allergies;
 	
 	private Integer station;
+	
+	public CompletePerson() {
+		
+	}
 	
 	public CompletePerson(String firstName, String lastName, String address, Integer age) {
 		this.firstName = firstName;
@@ -36,7 +38,7 @@ public class CompletePerson {
 	}
 
 	public CompletePerson(String firstName, String lastName, String address, String city, String zip, String phone,
-			String email, Integer age, String birthDate, List<String> medications, List<String> allergies,
+			String email, Integer age, List<String> medications, List<String> allergies,
 			Integer station) {
 		super();
 		this.firstName = firstName;
@@ -47,7 +49,6 @@ public class CompletePerson {
 		this.phone = phone;
 		this.email = email;
 		this.age = age;
-		this.birthDate = birthDate;
 		this.medications = medications;
 		this.allergies = allergies;
 		this.setStation(station);
@@ -118,13 +119,6 @@ public class CompletePerson {
 		this.age = age;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
-	}
 
 	public List<String> getMedications() {
 		return medications;
