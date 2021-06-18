@@ -4,6 +4,8 @@ package com.ocr.safety.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import com.ocr.safety.repository.DataTreatment;
 @Service
 public class FirestationService {
 	
+	private static final Logger logger = LogManager.getLogger(FirestationService.class);
+	
 	@Autowired
 	private DataTreatment Datatreatment;
 	
@@ -27,13 +31,23 @@ public class FirestationService {
 		
 		FireStation fireStation = Datatreatment.saveFireStation(prototype);
 		
+		if(fireStation != null) {
+			
+			logger.info(" firestation saved ");
+		}
+		
 		return fireStation;
 	}
 
 	public boolean deleteFireStation(FireStation prototype) {
 		
-		boolean fireStation = Datatreatment.deleteFireStation(prototype);
-
+		boolean fireStation = Datatreatment.deleteFireStation(prototype) ;
+		
+		if(fireStation) {
+			
+			logger.info(" firestation deleted ");
+		}
+		
 		return fireStation;
 	}
 
@@ -103,16 +117,16 @@ public class FirestationService {
 
 	public List<Integer> getStationByAddress(String address) {
 		
-	        List<Integer> stationNumber = new ArrayList<>();
+	        List<Integer> stationNb = new ArrayList<>();
 
 	        for (FireStation firestation : Datatreatment.getFirestations()) {
 	        	
 	            if (address.compareTo(firestation.getAddress()) == 0) {
 	            	
-	                stationNumber.add(firestation.getStation());
+	                stationNb.add(firestation.getStation());
 	            }
 	        }
-	        return stationNumber;
+	        return stationNb;
 	 }
 		
 	

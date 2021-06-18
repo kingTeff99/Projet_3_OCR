@@ -2,6 +2,8 @@ package com.ocr.safety.service;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +14,19 @@ import com.ocr.safety.repository.DataTreatment;
 @Service
 public class MedicalrecordService {
 	
+	private static final Logger logger = LogManager.getLogger(MedicalrecordService.class);
+	
 	@Autowired
 	private DataTreatment dataTreatment;
 
 	public MedicalRecord saveMedicalRecords(MedicalRecord prototype) {
 		
 		MedicalRecord medicalRecord = dataTreatment.saveMedicalRecords(prototype);
+		
+		if(medicalRecord != null) {
+			
+			logger.info(" new medical records saved ");
+		}
 		
 		return medicalRecord;
 	}
@@ -26,12 +35,22 @@ public class MedicalrecordService {
 		
 		MedicalRecord medicalRecord = dataTreatment.updateMedicalRecords(prototype);
 		
+		if(medicalRecord != null) {
+			
+			logger.info(" medical records updated ");
+		}
+		
 		return medicalRecord;
 	}
 
 	public boolean deleteMedicalRecords(MedicalRecord prototype) {
 		
 		boolean medicalRecord = dataTreatment.deleteMedicalRecords(prototype);
+		
+		if(medicalRecord) {
+			
+			logger.info(" medical records deleted ");
+		}
 		
 		return medicalRecord;
 	}

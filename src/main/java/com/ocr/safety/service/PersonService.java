@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +21,22 @@ import com.ocr.safety.repository.DataTreatment;
 @Service
 public class PersonService {
 	
+	private static final Logger logger = LogManager.getLogger(PersonService.class);
+	
 	@Autowired
 	private DataTreatment dataTreatment;
 	
 	@Autowired
 	MedicalrecordService medicalrecordService;
-
+	
 	public Person savePerson(Person prototype) {
 		
 		Person person = dataTreatment.savePerson(prototype);
+		
+		if(person != null) {
+			
+			logger.info("new person saved");
+		}
 		
 		return person;
 	}
@@ -36,12 +45,22 @@ public class PersonService {
 		
 		Person person = dataTreatment.updatePerson(prototype);
 		
+		if(person != null) {
+			
+			logger.info("person updated");
+		}
+		
 		return person;
 	}
 
 	public boolean deletePerson(Person prototype) {
 		
 		boolean person = dataTreatment.deletePerson(prototype);
+		
+		if(person) {
+			
+			logger.info("person deleted");
+		}
 		
 		return person;
 	}
@@ -91,11 +110,12 @@ public class PersonService {
 		
 		List<CompletePerson> per = new ArrayList<CompletePerson>();
 		
-		per = pers.stream().filter(p -> p.getLastName().equals(lastName) && p.getFirstName().equals(firstName)) 
-			.map(perso -> new CompletePerson(perso.getFirstName(),perso.getLastName(),perso.getAddress()
-	            ,perso.getCity(),perso.getZip(),perso.getPhone(),perso.getEmail(),dataTreatment.getAgeForPerson(perso)
-	            ,medicalrecordService.getMedications(perso),medicalrecordService.getAllergies(perso),0)).collect(Collectors.toList());
-        
+		per = pers.stream().filter(p -> p.getLastName().equals(lastName) && p.getFirstName().equals(firstName))
+			.map(perso -> new CompletePerson(perso.getFirstName(), perso.getLastName(), perso.getAddress()
+	            , perso.getCity(),perso.getZip(), perso.getPhone(), perso.getEmail(), dataTreatment.getAgeForPerson(perso)
+	            , medicalrecordService.getMedications(perso), medicalrecordService.getAllergies(perso), 0))
+			.collect(Collectors.toList());
+		
 		return per;
 	}
 
