@@ -7,19 +7,19 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.ocr.safety.model.AllData;
 import com.ocr.safety.model.FireStation;
 import com.ocr.safety.model.MedicalRecord;
 import com.ocr.safety.model.Person;
-import com.ocr.safety.model.FireStation;
 import com.ocr.safety.repository.DataTreatment;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringJUnitConfig
+@SpringBootTest
 public class DataTreatmentTest {
 	
 	@Autowired
@@ -33,25 +33,25 @@ public class DataTreatmentTest {
 	   personListByStationNumberAndAddressTest.add(new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com"));
 	}
 
-	private Person personToAddTest = DataTest.getPersonToAddTest();
+	private Person personToAddTest = DataForTest.getPersonToAddTest();
 
-    private Person personToUpdateTest = DataTest.getPersonToUpdateTest();
+    private Person personToUpdateTest = DataForTest.getPersonToUpdateTest();
 
-    private Person personToDeleteTest = DataTest.getPersonToDeleteTest();
+    private Person personToDeleteTest = DataForTest.getPersonToDeleteTest();
 
-    private FireStation emptyFirestation = DataTest.getEmptyFirestation();
+    private FireStation emptyFirestation = DataForTest.getEmptyFirestation();
 
-    private FireStation firestationToAdd = DataTest.getFireStationToAdd();
+    private FireStation firestationToAdd = DataForTest.getFireStationToAdd();
 
-    private FireStation firestationToDelete = DataTest.getFireStationToDelete();
+    private FireStation firestationToDelete = DataForTest.getFireStationToDelete();
 
-    private MedicalRecord emptyMedicalRecord = DataTest.getEmptyMedicalRecord();
+    private MedicalRecord emptyMedicalRecord = DataForTest.getEmptyMedicalRecord();
 
-    private MedicalRecord medicalRecordsToAddTest = DataTest.getMedicalRecordToAddTest();
+    private MedicalRecord medicalRecordsToAddTest = DataForTest.getMedicalRecordToAddTest();
 
-    private MedicalRecord medicalRecordsToUpdateTest = DataTest.getMedicalRecordToUpdateTest();
+    private MedicalRecord medicalRecordsToUpdateTest = DataForTest.getMedicalRecordToUpdateTest();
 
-    private MedicalRecord medicalRecordsToDeleteTest = DataTest.getMedicalRecordToDeleteTest();
+    private MedicalRecord medicalRecordsToDeleteTest = DataForTest.getMedicalRecordToDeleteTest();
 
 	public List<Person> personList;
 	
@@ -64,14 +64,14 @@ public class DataTreatmentTest {
 	    @Before
 	    public void setup() {
 	    	
-	        personList = DataTest.PersonList();
+	        personList = DataForTest.PersonList();
 	        
-	        firestationsList = DataTest.FirestationList();
+	        firestationsList = DataForTest.FirestationList();
 	        
-	        medicalRecordsList = DataTest.MedicalRecordList();
+	        medicalRecordsList = DataForTest.MedicalRecordList();
 	        
-	        AllData allData = new AllData(DataTest.PersonList(), DataTest.MedicalRecordList()
-					, DataTest.FirestationList());
+	        AllData allData = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+					, DataForTest.FirestationList());
 	        datatreatment.setAlldata(allData);
 
 	    }
@@ -363,7 +363,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void updateExistingMedicalRecordNoEmptyListTest() {
 	    	
-	        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(DataTest.MedicalRecordList());
+	        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(DataForTest.MedicalRecordList());
 	        
 	        assertEquals(medicalRecordsToUpdateTest, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
 	        
@@ -410,7 +410,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void deleteMedicalRecordNoEmptyListTest() {
-	        List<MedicalRecord> medicalRecordsListTest = DataTest.MedicalRecordList();
+	        List<MedicalRecord> medicalRecordsListTest = DataForTest.MedicalRecordList();
 	        
 	        assertEquals(true, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
 	        

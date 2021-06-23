@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.ocr.safety.model.AllData;
 import com.ocr.safety.model.ChildAlert;
@@ -20,7 +20,8 @@ import com.ocr.safety.repository.DataTreatment;
 import com.ocr.safety.service.PersonService;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringJUnitConfig
+@SpringBootTest
 public class PersonServiceTest {
 	
 	@Autowired
@@ -71,8 +72,8 @@ public class PersonServiceTest {
     @Before
 	public void setup() {
     	
-		AllData allDataTest = new AllData(DataTest.PersonList(), DataTest.MedicalRecordList()
-				, DataTest.FirestationList());
+		AllData allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+				, DataForTest.FirestationList());
 		
          datatreatment.setAlldata(allDataTest);
          
@@ -81,21 +82,21 @@ public class PersonServiceTest {
     @Test
     public void savePersonTest() {
     	
-    	assertEquals(DataTest.getPersonToAddTest(), personService.savePerson(DataTest.getPersonToAddTest()));
+    	assertEquals(DataForTest.getPersonToAddTest(), personService.savePerson(DataForTest.getPersonToAddTest()));
     	
     }
     
     @Test
     public void updatePersonTest() {
     	
-    	assertEquals(personService.updatePerson(DataTest.getPersonToUpdateTest()), DataTest.getPersonToUpdateTest());
+    	assertEquals(personService.updatePerson(DataForTest.getPersonToUpdateTest()), DataForTest.getPersonToUpdateTest());
     	
     }
     
     @Test
     public void deletePersonTest() {
     	
-    	assertEquals(personService.deletePerson(DataTest.getPersonToDeleteTest()), DataTest.getPersonToDeleteTest());
+    	assertEquals(personService.deletePerson(DataForTest.getPersonToDeleteTest()), DataForTest.getPersonToDeleteTest());
     	
     }
     

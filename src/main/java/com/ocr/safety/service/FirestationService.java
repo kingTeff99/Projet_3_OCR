@@ -96,13 +96,16 @@ public class FirestationService {
 		return new Fire(peopleLiveHere);
 	}
 
-	public Fire getPersonsByItsStationNumberArea(Integer stations) {
+	public List<Fire> getPersonsByItsStationNumberArea(List<Integer> stations) {
+		
+		List<Fire> newList = new ArrayList<>();
 		
 		List<CompletePerson> peopleList = new ArrayList<>();
 		
-		for(Person type : Datatreatment.getPersons()) {
+			for(Person type : Datatreatment.getPersons()) {
 			
-			if(Datatreatment.getFirestationNumberByPersonsAddress(type) == stations) {
+				if(Datatreatment.getFirestationsNumberByPersonsAddress(type) == stations) {
+					
 				
 				peopleList.add(new CompletePerson(type.getFirstName(), type.getLastName(), type.getAddress(),
 						type.getCity(), type.getZip(), type.getPhone(),
@@ -110,9 +113,13 @@ public class FirestationService {
 						medicalrecordService.getMedications(type), medicalrecordService.getAllergies(type), 
 						Datatreatment.getFirestationNumberByPersonsAddress(type)));
 				
-			}
+				
+				newList.add( new Fire(peopleList));
+				
+				
+				}
 		}
-		return new Fire(peopleList);
+		return newList;
 	}
 
 	public List<Integer> getStationByAddress(String address) {

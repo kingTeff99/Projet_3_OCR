@@ -27,7 +27,7 @@ public class PersonService {
 	private DataTreatment dataTreatment;
 	
 	@Autowired
-	MedicalrecordService medicalrecordService;
+	private MedicalrecordService medicalrecordService;
 	
 	public Person savePerson(Person prototype) {
 		

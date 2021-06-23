@@ -41,7 +41,7 @@ public class SafetyController {
 	@Autowired
 	private MedicalrecordService medicalrecordService;
 	
-	
+	//Display all data present in Json file
 	@GetMapping(value = "/")
 	public  AllData displayData() {
 		
@@ -81,10 +81,17 @@ public class SafetyController {
 	
 	//URL5 FONCTIONNE!!!
 	@GetMapping(value = "/flood/stations")
-	public Fire getAllPersonsLiveInThisArea(@RequestParam Integer stations) {
+	public List<Fire> getAllPersonsLiveInThisArea(@RequestParam List<Integer> stations) {
 					
 		return firestationService.getPersonsByItsStationNumberArea(stations);
-					
+		
+//		System.out.println(Arrays.asList(stations));
+		
+		
+		
+//			return null;
+			
+			
 	}
 	
 	//URL6 FONCTIONNE!!!

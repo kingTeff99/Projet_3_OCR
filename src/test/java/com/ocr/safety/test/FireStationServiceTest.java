@@ -8,21 +8,21 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.ocr.safety.model.AllData;
 import com.ocr.safety.model.CompletePerson;
 import com.ocr.safety.model.Fire;
-import com.ocr.safety.model.FireStation;
 import com.ocr.safety.model.FireStationPlus;
 import com.ocr.safety.model.Person;
 import com.ocr.safety.repository.DataTreatment;
 import com.ocr.safety.service.FirestationService;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringJUnitConfig
+@SpringBootTest
 public class FireStationServiceTest {
 	
 	@Autowired
@@ -78,21 +78,23 @@ public class FireStationServiceTest {
 	
 	@Before
 	public void setup() {
-		AllData allDataTest = new AllData(DataTest.PersonList(), DataTest.MedicalRecordList()
-				, DataTest.FirestationList());
+		AllData allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+				, DataForTest.FirestationList());
         datatreatment.setAlldata(allDataTest);
 	}
 	
 	 @Test
 	 public void getFirestationAreaTest() {
 		 
-       Assert.assertEquals(firestationService.getPersonFromFireStationArea(3), getPersonFromFireStationAreaTest());
+       assertEquals(firestationService.getPersonFromFireStationArea(3), getPersonFromFireStationAreaTest());
+       
      }
 
 	 @Test
 	 public void getPhoneAlertFromFirestationsTest() {
 		 
-		 Assert.assertEquals(firestationService.getPhoneNumberByFireStationNumber(2), getPhoneAlertListTest());
+		 assertEquals(firestationService.getPhoneNumberByFireStationNumber(2), getPhoneAlertListTest());
+		 
      }
 
 	 @Test
@@ -110,13 +112,15 @@ public class FireStationServiceTest {
 	 @Test
 	 public void saveFirestationTest() {
 		 
-		 Assert.assertEquals( DataTest.getFireStationToAdd(), firestationService.saveFireStation(DataTest.getFireStationToAdd()));
+		 Assert.assertEquals( DataForTest.getFireStationToAdd(), firestationService.saveFireStation(DataForTest.getFireStationToAdd()));
 	 }
 
 	 @Test
 	 public void deleteFirestationTest() {
 		 
-		 Assert.assertEquals(true, firestationService.deleteFireStation(DataTest.getFireStationToDelete()));
+		 Assert.assertEquals(true, firestationService.deleteFireStation(DataForTest.getFireStationToDelete()));
 	 }
 	 
 }
+
+

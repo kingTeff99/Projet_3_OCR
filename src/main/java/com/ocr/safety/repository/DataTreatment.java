@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -367,6 +368,21 @@ public class DataTreatment {
 					.findFirst().map(FireStation::getStation).orElse(0);
 		}
 		return 0;
+	}
+	
+	public List<Integer> getFirestationsNumberByPersonsAddress(Person prototype) {
+		
+		List<Integer> fireList = new ArrayList<>();
+		
+		if(prototype != null) {
+			
+			loadFile();
+			
+			return fireList = getFirestations().stream()
+					.filter(station -> prototype.getAddress().equals(station.getAddress()))
+					.map(FireStation::getStation).collect(Collectors.toList());
+		}
+		return fireList;
 	}
 
 

@@ -8,25 +8,23 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.ocr.safety.model.AllData;
-import com.ocr.safety.model.MedicalRecord;
 import com.ocr.safety.model.Person;
 import com.ocr.safety.repository.DataTreatment;
 import com.ocr.safety.service.MedicalrecordService;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringJUnitConfig
+@SpringBootTest
 public class MedicalRecordServiceTest {
 	
 	@Autowired
-	private DataTreatment datatreatment;
+	DataTreatment datatreatment;
 	
-	@Autowired
-	private MedicalrecordService medicalrecordService;
+	MedicalrecordService medicalrecordService;
 	
 	private List<String> medicationsFromPersonList = getMedicationsFromPerson();
 
@@ -50,10 +48,10 @@ public class MedicalRecordServiceTest {
 	@Before
 	public void setup() {
 		
-		personlist = DataTest.PersonList();
+		personlist = DataForTest.PersonList();
 		
-		AllData allDataTest = new AllData(DataTest.PersonList(), DataTest.MedicalRecordList()
-				, DataTest.FirestationList());
+		AllData allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+				, DataForTest.FirestationList());
 		
 		 datatreatment.setAlldata(allDataTest);
         
@@ -70,25 +68,29 @@ public class MedicalRecordServiceTest {
 	@Test
 	public void getAllergiesFromAPersonTest() {
 		
-		assertEquals(medicalrecordService.getAllergies(personlist.get(0)), getAllergiesFromPerson());
+		MedicalrecordService baba = new MedicalrecordService();
+
+		
+		assertEquals(baba.getAllergies(personlist.get(0)), getAllergiesFromPerson());
 	}
 	
 	@Test
 	public void saveMedicalRecordTest() {
 		
-		assertEquals( DataTest.getMedicalRecordToAddTest(), medicalrecordService.saveMedicalRecords(DataTest.getMedicalRecordToAddTest()));
+		assertEquals( DataForTest.getMedicalRecordToAddTest(), medicalrecordService.saveMedicalRecords(DataForTest.getMedicalRecordToAddTest()));
 	}
 	
 	@Test
 	public void updateMedicalRecordTest() {
 		
-		assertEquals(DataTest.getMedicalRecordToUpdateTest(), medicalrecordService.updateMedicalRecords(DataTest.getMedicalRecordToUpdateTest()));
+		assertEquals(DataForTest.getMedicalRecordToUpdateTest(), medicalrecordService.updateMedicalRecords(DataForTest.getMedicalRecordToUpdateTest()));
 	}
+	
 	
 	@Test
 	public void deleteMedicalRecordTest() {
-		
-		assertEquals(DataTest.getMedicalRecordToDeleteTest(), medicalrecordService.deleteMedicalRecords(DataTest.getMedicalRecordToDeleteTest()));
+		assertEquals(DataForTest.getMedicalRecordToDeleteTest(), medicalrecordService.deleteMedicalRecords(DataForTest.getMedicalRecordToDeleteTest()));
+
 	}
 
 }

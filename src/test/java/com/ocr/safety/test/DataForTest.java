@@ -8,7 +8,7 @@ import com.ocr.safety.model.FireStation;
 import com.ocr.safety.model.MedicalRecord;
 import com.ocr.safety.model.Person;
 
-public class DataTest {
+public class DataForTest {
 	
 	public static  List<Person> PersonList(){
 		return new ArrayList<>(Arrays.asList(
