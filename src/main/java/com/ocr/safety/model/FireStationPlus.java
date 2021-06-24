@@ -47,5 +47,52 @@ public class FireStationPlus {
 	public void setStationNumber(Integer stationNumber) {
 		this.stationNumber = stationNumber;
 	}
+
+	@Override
+	public String toString() {
+		return "FireStationPlus [person=" + person + ", NumberOfAdult=" + NumberOfAdult + ", NumberOfChildren="
+				+ NumberOfChildren + ", stationNumber=" + stationNumber + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (NumberOfAdult ^ (NumberOfAdult >>> 32));
+		result = prime * result + (int) (NumberOfChildren ^ (NumberOfChildren >>> 32));
+		result = prime * result + ((person == null) ? 0 : person.hashCode());
+		result = prime * result + ((stationNumber == null) ? 0 : stationNumber.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FireStationPlus other = (FireStationPlus) obj;
+		if (NumberOfAdult != other.NumberOfAdult)
+			return false;
+		if (NumberOfChildren != other.NumberOfChildren)
+			return false;
+		if (person == null) {
+			if (other.person != null)
+				return false;
+		} else if (!person.equals(other.person))
+			return false;
+		if (stationNumber == null) {
+			if (other.stationNumber != null)
+				return false;
+		} else if (!stationNumber.equals(other.stationNumber))
+			return false;
+		return true;
+	}
+	
+	
+	
+	
 		
 }

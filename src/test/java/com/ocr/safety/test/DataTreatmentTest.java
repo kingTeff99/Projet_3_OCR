@@ -1,12 +1,14 @@
 package com.ocr.safety.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,13 +27,14 @@ public class DataTreatmentTest {
 	@Autowired
 	private DataTreatment datatreatment;
 	
-	private List<Person> personListByStationNumberAndAddressTest = new ArrayList<>();
-
-	{
-	   personListByStationNumberAndAddressTest.add(new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com"));
-	   personListByStationNumberAndAddressTest.add(new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "drk@email.com"));
-	   personListByStationNumberAndAddressTest.add(new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com"));
-	}
+	private List<Person> personListByStationNumberAndAddressTest = new ArrayList<>(Arrays.asList(
+			new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com"),
+			new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "drk@email.com"),
+			new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com")
+			));
+	
+	
+	private Person emptyPerson = DataForTest.getEmptyPerson();
 
 	private Person personToAddTest = DataForTest.getPersonToAddTest();
 
@@ -59,122 +62,133 @@ public class DataTreatmentTest {
 	
 	public List<MedicalRecord> medicalRecordsList;
 	
-	public AllData allData;
+	public AllData allDataTest;
 
-	    @Before
-	    public void setup() {
+	@BeforeEach
+    public void setup() {
 	    	
-	        personList = DataForTest.PersonList();
+		personList = DataForTest.PersonList();
 	        
-	        firestationsList = DataForTest.FirestationList();
+	    firestationsList = DataForTest.FirestationList();
 	        
-	        medicalRecordsList = DataForTest.MedicalRecordList();
+        medicalRecordsList = DataForTest.MedicalRecordList();
 	        
-	        AllData allData = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+        allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
 					, DataForTest.FirestationList());
-	        datatreatment.setAlldata(allData);
+	    datatreatment.setAlldata(allDataTest);
 
-	    }
+    }
 
-//	    @Test
-//	    public void getNbStationByAddressFromValidPersonTest() {
-//	    	assertEquals(3, datatreatment.getFirestationNumberByPersonsAddress(personList.get(0)));
-//	    }
-//
-//
-//	    @Test
-//	    public void getNbStationByAddressFromNullPersonTest() {
-//	    	assertEquals(0, datatreatment.getFirestationNumberByPersonsAddress(null));
-//	    }
-//
-//	    @Test
-//	    public void getAgeFromValidPersonTest() {
-//	    	assertEquals(36, datatreatment.getAgeForPerson(personList.get(0)));
-//	    }
-//
-//	    @Test
-//	    public void getAgeFromNoValidPersonTest() {
-//	    	assertEquals(0, datatreatment.getAgeFromPerson(emptyPerson));
-//	    }
-//
-//	    @Test
-//
-//	    public void getAgeFromNullPersonTest() {
-//	    	assertEquals(0, datatreatment.getAgeForPerson(null));
-//	    }
+	@Test		    
+	public void getNbStationByAddressFromValidPersonTest() {
+	
+		assertThat( datatreatment.getFirestationNumberByPersonsAddress(personList.get(0))).isEqualTo(3);
+		
+	}
 
-	    @Test
-	    public void getPersonsByValidFirestationNumberTest() {
+
+	@Test
+    public void getNbStationByAddressFromNullPersonTest() {
+		
+		assertThat(datatreatment.getFirestationNumberByPersonsAddress(null)).isEqualTo(0);
+    }
+
+	@Test
+    public void getAgeFromValidPersonTest() {
+		
+	    	assertThat(datatreatment.getAgeForPerson(personList.get(0))).isEqualTo(36);
+	}
+
+    @Test
+    public void getAgeFromNoValidPersonTest() {
+    	
+	    	assertThat(datatreatment.getAgeForPerson(emptyPerson)).isEqualTo(0);
+	}
+
+    @Test
+    public void getAgeFromNullPersonTest() {
+    	
+	    	assertThat(datatreatment.getAgeForPerson(null)).isEqualTo(0);
+    }
+
+    @Test
+    public void getPersonsByValidFirestationNumberTest() {
 	       
 	        assertEquals(personListByStationNumberAndAddressTest, datatreatment.getPersonByItsFirestationNumber(firestationsList.get(0).getStation()));
-	    }
+    }
 
-	    @Test
-	    public void getPersonsByNoValidFirestationNumberTest() {
+    @Test
+    public void getPersonsByNoValidFirestationNumberTest() {
 	    	
-	    	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsFirestationNumber(-1));
+	   	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsFirestationNumber(-1));
 	    	
-	    }
+    }
 
-	    @Test
-	    public void getPersonsByValidAddress() {
+    @Test
+    public void getPersonsByValidAddress() {
 	    	
-	    	assertEquals(personListByStationNumberAndAddressTest, datatreatment.getPersonByItsAddress("1509 Culver St"));
+	 	assertEquals(personListByStationNumberAndAddressTest, datatreatment.getPersonByItsAddress("1509 Culver St"));
 	    	
-	    }
+    }
 
-	    @Test
-	    public void getPersonsByNoValidAddress() {
+	@Test
+	public void getPersonsByNoValidAddress() {
 	    	
-	    	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsAddress("11"));
+    	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsAddress("11"));
 	    	
-	    }
+	}
 
-	    @Test
-	    public void getPersonsByNullAddress() {
+    @Test
+    public void getPersonsByNullAddress() {
 	    	
-	    	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsAddress(null));
+    	assertEquals(Collections.emptyList(), datatreatment.getPersonByItsAddress(null));
 	    	
-	    }
+	}
 
-//	    @Test
-//	    public void getAgeFromValidBirthdate() {
-//	    	assertEquals(36, datatreatment.getAgeWithBirthDate(medicalRecordsList.get(0).getBirthdate()));
-//	    }
-//	    
-//	    @Test
-//	    public void getAgeFromNoValidBirthdate() {
-//	    	assertEquals(0, datatreatment.getAgeWithBirthDate(""));
-//	    }
-//
-//	    @Test
-//	    public void getAgeFromNullBirthdate() {
-//	    	assertEquals(0, datatreatment.getAgeWithBirthDate(null));
-//	    }
+	@Test
+    public void getAgeFromValidBirthdate() {
+	    	
+		assertThat(datatreatment.getAgeWithBirthDate(medicalRecordsList.get(0).getBirthdate())).isEqualTo(36);
 
-	    @Test
-	    public void getFirestationsTest() {
+	}
+	    
+	@Test
+    public void getAgeFromNoValidBirthdate() {
 	    	
-	    	assertEquals(firestationsList, datatreatment.getFirestations());
-	    	
-	    }
+		assertThat(datatreatment.getAgeWithBirthDate("")).isEqualTo(0);
+		
+	}
 
-	    @Test
-	    public void getPersonsTest() {
+    @Test
+    public void getAgeFromNullBirthdate() {
 	    	
-	    	assertEquals(personList, datatreatment.getPersons());
-	    	
-	    }
+    	assertThat( datatreatment.getAgeWithBirthDate(null)).isEqualTo(0);
 
-	    @Test
-	    public void getMedicalRecordsTest() {
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    	
-	    }
+    }
 
-	    @Test
-	    public void savePersonNoEmptyListTest() {
+    @Test
+    public void getFirestationsTest() {
+	    	
+    	assertEquals(firestationsList, datatreatment.getFirestations());
+    	
+	}
+
+    @Test
+    public void getPersonsTest() {
+	    	
+    	assertEquals(personList, datatreatment.getPersons());
+	    	
+    }
+
+    @Test
+    public void getMedicalRecordsTest() {
+	    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+	    	
+    }
+
+    @Test
+    public void savePersonNoEmptyListTest() {
 	    	
 	        List<Person> personListTest = new ArrayList<>(personList);
 	        personListTest.add(personToAddTest);
@@ -187,7 +201,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void saveUniquePersonEmptyListTest() {
 	    	
-	    	allData.setPersons(new ArrayList<>());
+	    	allDataTest.setPersons(new ArrayList<>());
 	    	
 	        assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
 	        
@@ -213,7 +227,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void savePersonNullListTest() {
 	    	
-	    	allData.setPersons(null);
+	    	allDataTest.setPersons(null);
 	    	
 	        assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
 	        
@@ -236,31 +250,30 @@ public class DataTreatmentTest {
 	    @Test
 	    public void updatePersonEmptyListTest() {
 	    	
-	    	allData.setPersons(new ArrayList<>());
+	    	allDataTest.setPersons(new ArrayList<>());
 	    	
 	        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
 	        
 	        assertEquals(List.of(), datatreatment.getPersons());
 	    }
 
-//	    @Test
-//	    public void updateNoExistingPersonListTest() {
-//	    	assertEquals(null, datatreatment.updatePerson(emptyPerson));
-//	    	assertEquals(personList, datatreatment.getPersons());
-//	    }
+	    @Test
+	    public void updateNoExistingPersonListTest() {
+	    	assertEquals(null, datatreatment.updatePerson(emptyPerson));
+	    	assertEquals(personList, datatreatment.getPersons());
+	    }
 
 	    @Test
 	    public void updateNullPersonListTest() {
 	    	
 	    	assertEquals(null, datatreatment.updatePerson(null));
 	    	
-	    	assertEquals(personList, datatreatment.getPersons());
 	    }
 
 	    @Test
 	    public void updatePersonNullListTest() {
 	    	
-	    	allData.setPersons(null);
+	    	allDataTest.setPersons(null);
 	    	
 	        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
 	        
@@ -270,7 +283,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void deletePersonNoEmptyListTest() {
 	    	
-	        List<Person> personListTest = new ArrayList<>(allData.getPersons());
+	        List<Person> personListTest = new ArrayList<>(allDataTest.getPersons());
 	        
 	        personListTest.remove(0);
 	        
@@ -282,18 +295,18 @@ public class DataTreatmentTest {
 	    @Test
 	    public void deletePersonEmptyListTest() {
 	    	
-	    	allData.setPersons(new ArrayList<>());
+	    	allDataTest.setPersons(new ArrayList<>());
 	    	
 	        assertEquals(false, datatreatment.deletePerson(personToDeleteTest));
 	        
 	        assertEquals(List.of(), datatreatment.getPersons());
 	    }
 
-//	    @Test
-//	    public void deleteNoExistingPersonListTest() {
-//	    	assertEquals(false, datatreatment.deletePerson(emptyPerson));
-//	    	assertEquals(personList, datatreatment.getPersons());
-//	    }
+	    @Test
+	    public void deleteNoExistingPersonListTest() {
+	    	assertEquals(false, datatreatment.deletePerson(emptyPerson));
+	    	assertEquals(personList, datatreatment.getPersons());
+	    }
 
 	    @Test
 	    public void deleteNullPersonListTest() {
@@ -306,7 +319,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void deletePersonNullListTest() {
 	    	
-	    	allData.setPersons(null);
+	    	allDataTest.setPersons(null);
 	    	
 	        assertEquals(false, datatreatment.deletePerson(personToAddTest));
 	        
@@ -328,7 +341,7 @@ public class DataTreatmentTest {
 	    @Test
 	    public void saveUniqueMedicalRecordEmptyListTest() {
 	    	
-	    	allData.setMedicalrecords(new ArrayList<>());
+	    	allDataTest.setMedicalrecords(new ArrayList<>());
 	    	
 	        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
 	        
@@ -353,7 +366,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void saveMedicalRecordNullListTest() {
-	    	allData.setMedicalrecords(null);
+	    	allDataTest.setMedicalrecords(null);
 	    	
 	        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
 	        
@@ -371,12 +384,13 @@ public class DataTreatmentTest {
 	        medicalRecordsListTest.get(0).setAllergies(List.of());
 	        
 	        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
+	        
 	    }
 
 	    @Test
 	    public void updateMedicalRecordEmptyListTest() {
 	    	
-	    	allData.setMedicalrecords(new ArrayList<>());
+	    	allDataTest.setMedicalrecords(new ArrayList<>());
 	    	
 	        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
 	        
@@ -401,7 +415,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void updateMedicalRecordNullListTest() {
-	    	allData.setMedicalrecords(null);
+	    	allDataTest.setMedicalrecords(null);
 	    	
 	        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
 	    	
@@ -421,7 +435,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void deleteMedicalRecordEmptyListTest() {
-	    	allData.setMedicalrecords(new ArrayList<>());
+	    	allDataTest.setMedicalrecords(new ArrayList<>());
 	    	
 	        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
 	        
@@ -446,7 +460,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void deleteMedicalRecordNullListTest() {
-	    	allData.setMedicalrecords(null);
+	    	allDataTest.setMedicalrecords(null);
 	    	
 	        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
 	        
@@ -455,7 +469,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void saveFirestationNoEmptyListTest() {
-	        List<FireStation> firestationsListTest = new ArrayList<>(allData.getFirestations());
+	        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
 	        
 	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
 	        
@@ -466,7 +480,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void saveUniqueFirestationEmptyListTest() {
-	    	allData.setFirestations(new ArrayList<>());
+	    	allDataTest.setFirestations(new ArrayList<>());
 	    	
 	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
 	        
@@ -491,7 +505,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void saveFirestationNullListTest() {
-	    	allData.setFirestations(null);
+	    	allDataTest.setFirestations(null);
 	    	
 	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
 	        
@@ -502,7 +516,7 @@ public class DataTreatmentTest {
 	    public void deleteFirestationNoEmptyListTest() {
 	    	
 	        System.out.println(firestationsList);
-	        List<FireStation> firestationsListTest = new ArrayList<>(allData.getFirestations());
+	        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
 	        System.out.println(firestationsList);
 	        
 	        assertEquals(true, datatreatment.deleteFireStation(firestationToDelete));
@@ -516,7 +530,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void deleteFirestationEmptyListTest() {
-	    	allData.setFirestations(new ArrayList<>());
+	    	allDataTest.setFirestations(new ArrayList<>());
 	    	
 	        assertEquals(datatreatment.deleteFireStation(firestationToDelete), false);
 	        
@@ -541,7 +555,7 @@ public class DataTreatmentTest {
 
 	    @Test
 	    public void deleteFirestationNullListTest() {
-	    	allData.setFirestations(null);
+	    	allDataTest.setFirestations(null);
 	    	
 	        assertEquals(false, datatreatment.deleteFireStation(firestationToDelete));
 	        

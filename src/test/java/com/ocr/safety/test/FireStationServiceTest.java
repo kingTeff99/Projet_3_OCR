@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,15 +31,16 @@ public class FireStationServiceTest {
 	@Autowired
 	DataTreatment datatreatment;
 	
+	
+	private AllData allDataTest; 
+	
 	public static FireStationPlus getPersonFromFireStationAreaTest() {
         return new FireStationPlus(
    			List.of(
                 new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com"),
                 new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "drk@email.com"),
-                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com"),
-                new Person("Roger", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com" ),
-    			new Person("Felicia", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6544", "jaboyd@email.com" )),
-                3,2,3);
+                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com")),
+                2,1,3);
     }
 
     public static FireStationPlus getFirestationsAreaControllerTest() {
@@ -52,14 +53,14 @@ public class FireStationServiceTest {
     }
 
     public static List<String> getPhoneAlertListTest() {
-        return new ArrayList<>(Arrays.asList("841-874-6512", "841-874-6513"));
+        return new ArrayList<>(Arrays.asList("841-874-6512", "841-874-6544"));
     }
 
     public static List<CompletePerson> getCompletePersonListFireStationNumberThreeTest() {
         return new ArrayList<>(Arrays.asList(
            new CompletePerson("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com",37, List.of("aznol:350mg", "hydrapermazol:100mg"), List.of("nillacilan"), 3),
            new CompletePerson("Jacob", "Boyd",  "1509 Culver St", "Culver", "97451", "841-874-6513", "drk@email.com", 32, List.of("pharmacol:5000mg", "terazine:10mg", "noznazol:250mg"), List.of(), 3),
-           new CompletePerson("Tenley", "Boyd",  "1509 Culver St", "Culver", "97451", "841-874-6513", "tenz@email.com", 9, List.of(), List.of("peanut"), 3)
+           new CompletePerson("Tenley", "Boyd",  "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com", 9, List.of(), List.of("peanut"), 3)
         ));
     }
 
@@ -76,50 +77,59 @@ public class FireStationServiceTest {
     }
     
 	
-	@Before
+	@BeforeEach
 	public void setup() {
-		AllData allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+		 allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
 				, DataForTest.FirestationList());
         datatreatment.setAlldata(allDataTest);
 	}
 	
-	 @Test
-	 public void getFirestationAreaTest() {
+	@AfterEach
+	public void endUp() {
+		
+	}
+	
+	@Test
+	public void getFirestationAreaTest() {
 		 
-       assertEquals(firestationService.getPersonFromFireStationArea(3), getPersonFromFireStationAreaTest());
+       assertEquals(getPersonFromFireStationAreaTest(), firestationService.getPersonFromFireStationArea(3));
        
-     }
+    }
 
-	 @Test
-	 public void getPhoneAlertFromFirestationsTest() {
+	@Test
+	public void getPhoneAlertFromFirestationsTest() {
 		 
-		 assertEquals(firestationService.getPhoneNumberByFireStationNumber(2), getPhoneAlertListTest());
+		 assertEquals(getPhoneAlertListTest(), firestationService.getPhoneNumberByFireStationNumber(2));
 		 
-     }
+    }
 
-	 @Test
-	 public void getStationByAddressTest() {
+	@Test
+	public void getStationByAddressTest() {
 		 
-		 Assert.assertEquals(firestationService.getStationByAddress("29 15th St"),2);
-	 }
+		 assertEquals(List.of(2), firestationService.getStationByAddress("892 Downing Ct"));
+		 
+	}
 
-	 @Test
-	 public void getPersonsByAddressTest() {
+	@Test
+	public void getPersonsByAddressTest() {
 		 
-		 Assert.assertEquals(firestationService.getPersonsByItsAddress("1509 Culver St"), getFireMedicalRecordTest());
-	 }
+		 assertEquals(getFireMedicalRecordTest(), firestationService.getPersonsByItsAddress("1509 Culver St"));
+		 
+	}
 
-	 @Test
-	 public void saveFirestationTest() {
+	@Test
+	public void saveFirestationTest() {
 		 
-		 Assert.assertEquals( DataForTest.getFireStationToAdd(), firestationService.saveFireStation(DataForTest.getFireStationToAdd()));
-	 }
+		 assertEquals( DataForTest.getFireStationToAdd(), firestationService.saveFireStation(DataForTest.getFireStationToAdd()));
+		 
+	}
 
-	 @Test
-	 public void deleteFirestationTest() {
+	@Test
+	public void deleteFirestationTest() {
 		 
-		 Assert.assertEquals(true, firestationService.deleteFireStation(DataForTest.getFireStationToDelete()));
-	 }
+		 assertEquals(true, firestationService.deleteFireStation(DataForTest.getFireStationToDelete()));
+		 
+	}
 	 
 }
 

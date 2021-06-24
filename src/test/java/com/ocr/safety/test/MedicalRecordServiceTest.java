@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,19 +24,17 @@ public class MedicalRecordServiceTest {
 	@Autowired
 	DataTreatment datatreatment;
 	
+	@Autowired
 	MedicalrecordService medicalrecordService;
 	
-	private List<String> medicationsFromPersonList = getMedicationsFromPerson();
-
-    private List<String> allergiesFromPersonList = getAllergiesFromPerson();
 	
-	public List<String> getMedicationsFromPerson() {
+	public static List<String> getMedicationsFromPerson() {
     	
         return new ArrayList<>(Arrays.asList("aznol:350mg", "hydrapermazol:100mg"));
         
     }
 
-    public List<String> getAllergiesFromPerson() {
+    public static List<String> getAllergiesFromPerson() {
     	
         return new ArrayList<>(Arrays.asList("nillacilan"));
         
@@ -45,7 +43,7 @@ public class MedicalRecordServiceTest {
     private List<Person> personlist;
     
 	
-	@Before
+	@BeforeEach
 	public void setup() {
 		
 		personlist = DataForTest.PersonList();
@@ -62,16 +60,12 @@ public class MedicalRecordServiceTest {
 		
 		 assertEquals(getMedicationsFromPerson(), medicalrecordService.getMedications(personlist.get(0)));
 		
-//		assertSame(getMedicationsFromPerson(), medicalrecordService.getMedications(personlist.get(0)));
 	}
 	
 	@Test
 	public void getAllergiesFromAPersonTest() {
 		
-		MedicalrecordService baba = new MedicalrecordService();
-
-		
-		assertEquals(baba.getAllergies(personlist.get(0)), getAllergiesFromPerson());
+		assertEquals(getAllergiesFromPerson(), medicalrecordService.getAllergies(personlist.get(0)));
 	}
 	
 	@Test
@@ -89,7 +83,7 @@ public class MedicalRecordServiceTest {
 	
 	@Test
 	public void deleteMedicalRecordTest() {
-		assertEquals(DataForTest.getMedicalRecordToDeleteTest(), medicalrecordService.deleteMedicalRecords(DataForTest.getMedicalRecordToDeleteTest()));
+		assertEquals(true, medicalrecordService.deleteMedicalRecords(DataForTest.getMedicalRecordToDeleteTest()));
 
 	}
 
