@@ -75,13 +75,13 @@ public class DataForTest {
 
     public static Person getPersonToUpdateTest() {
     	
-		return new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "changesemail@email.com" );
+		return new Person("Jacob", "Boyd", "1509 Culver St", "Montreal", "97451", "841-874-6513", "changesemail@email.com" );
 		
     }
 
     public static Person getPersonToDeleteTest() {
     	
-        return new Person("Roger", "Boyd", "", "", "", "", "");
+        return new Person("John", "Boyd", "", "", "", "", "");
         
         
     }

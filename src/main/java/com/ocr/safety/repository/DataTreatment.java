@@ -1,7 +1,6 @@
 package com.ocr.safety.repository;
 
 import java.io.FileInputStream;
-
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.Period;
@@ -299,12 +298,21 @@ public class DataTreatment {
 		
 		LocalDate today = LocalDate.now();
 		
-	    DateTimeFormatter formatter = DateTimeFormatter
-	      .ofPattern("MM/dd/yyyy");
-	    
-	    LocalDate parsedBirthDate = LocalDate.parse(birthdate, formatter);
-	    
-	    return Period.between(parsedBirthDate, today).getYears();
+		try {
+			
+		DateTimeFormatter formatter = DateTimeFormatter
+				      .ofPattern("MM/dd/yyyy");
+				    
+		LocalDate parsedBirthDate = LocalDate.parse(birthdate, formatter);
+				    
+		return Period.between(parsedBirthDate, today).getYears();
+			
+		} catch (Exception e) {
+			
+			logger.info("Birthdate is not correct");
+		}
+		
+	    return 0;
 	    
 	}
 

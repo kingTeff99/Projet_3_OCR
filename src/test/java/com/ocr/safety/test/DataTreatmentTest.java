@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,11 @@ public class DataTreatmentTest {
 	    datatreatment.setAlldata(allDataTest);
 
     }
+	
+	@AfterEach
+    public void endUp() {
+		
+	}
 
 	@Test		    
 	public void getNbStationByAddressFromValidPersonTest() {
@@ -96,19 +102,21 @@ public class DataTreatmentTest {
 	@Test
     public void getAgeFromValidPersonTest() {
 		
-	    	assertThat(datatreatment.getAgeForPerson(personList.get(0))).isEqualTo(36);
+	    assertThat(datatreatment.getAgeForPerson(personList.get(0))).isEqualTo(37);
+	    	
 	}
 
     @Test
     public void getAgeFromNoValidPersonTest() {
     	
-	    	assertThat(datatreatment.getAgeForPerson(emptyPerson)).isEqualTo(0);
+	    assertThat(datatreatment.getAgeForPerson(emptyPerson)).isEqualTo(0);
+	    
 	}
 
     @Test
     public void getAgeFromNullPersonTest() {
     	
-	    	assertThat(datatreatment.getAgeForPerson(null)).isEqualTo(0);
+	    assertThat(datatreatment.getAgeForPerson(null)).isEqualTo(0);
     }
 
     @Test
@@ -148,7 +156,7 @@ public class DataTreatmentTest {
 	@Test
     public void getAgeFromValidBirthdate() {
 	    	
-		assertThat(datatreatment.getAgeWithBirthDate(medicalRecordsList.get(0).getBirthdate())).isEqualTo(36);
+		assertThat(datatreatment.getAgeWithBirthDate(medicalRecordsList.get(0).getBirthdate())).isEqualTo(37);
 
 	}
 	    
@@ -196,370 +204,403 @@ public class DataTreatmentTest {
 	        assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
 	        
 	        assertEquals(personListTest, datatreatment.getPersons());
-	    }
+	}
 
-	    @Test
-	    public void saveUniquePersonEmptyListTest() {
+	@Test
+    public void saveUniquePersonEmptyListTest() {
 	    	
-	    	allDataTest.setPersons(new ArrayList<>());
+		allDataTest.setPersons(new ArrayList<>());
 	    	
-	        assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
+		assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
 	        
-	        assertEquals(List.of(personToAddTest), datatreatment.getPersons());
-	    }
+	    assertEquals(List.of(personToAddTest), datatreatment.getPersons());
+	    
+	}
 
-	    @Test
-	    public void saveExistingPersonListTest() {
+    @Test
+    public void saveExistingPersonListTest() {
+	
+    assertEquals(null, datatreatment.savePerson(personList.get(0)));
 	    	
-	    	assertEquals(null, datatreatment.savePerson(personList.get(0)));
-	    	
-	    	assertEquals(personList, datatreatment.getPersons());
-	    }
+    assertEquals(personList, datatreatment.getPersons());
+	
+    }
 
-	    @Test
-	    public void saveNullPersonListTest() {
+	@Test
+    public void saveNullPersonListTest() {
 	    	
-	    	assertEquals(null, datatreatment.savePerson(null));
+		assertEquals(null, datatreatment.savePerson(null));
 	    	
-	    	assertEquals(personList, datatreatment.getPersons());
-	    }
+	   	assertEquals(personList, datatreatment.getPersons());
+	   	
+	}
 
-	    @Test
-	    public void savePersonNullListTest() {
+	@Test
+    public void savePersonNullListTest() {
 	    	
-	    	allDataTest.setPersons(null);
+		allDataTest.setPersons(null);
 	    	
-	        assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
+	    assertEquals(personToAddTest, datatreatment.savePerson(personToAddTest));
 	        
-	        assertEquals(List.of(personToAddTest), datatreatment.getPersons());
-	    }
+        assertEquals(List.of(personToAddTest), datatreatment.getPersons());
 
-	    @Test
-	    public void updateExistingPersonNoEmptyListTest() {
-	    	
-	        List<Person> personListTest = new ArrayList<>(datatreatment.getPersons());
-	        
-	        assertEquals(personToUpdateTest, datatreatment.updatePerson(personToUpdateTest));
-	        
-	        personListTest.get(0).setCity("Paris");
-	        
-	        assertEquals(personListTest, datatreatment.getPersons());
-	    }
+	}
+
+	@Test
+    public void updateExistingPersonNoEmptyListTest() {
+    	
+        List<Person> personListTest = new ArrayList<>(datatreatment.getPersons());
+        
+        assertEquals(personToUpdateTest, datatreatment.updatePerson(personToUpdateTest));
+        
+        personListTest.get(1).setCity("Montreal");
+        
+        personListTest.get(1).setEmail("changesemail@email.com");
+        
+        assertEquals(personListTest, datatreatment.getPersons());
+    }
 
 
-	    @Test
-	    public void updatePersonEmptyListTest() {
-	    	
-	    	allDataTest.setPersons(new ArrayList<>());
-	    	
-	        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
-	        
-	        assertEquals(List.of(), datatreatment.getPersons());
-	    }
+    @Test
+    public void updatePersonEmptyListTest() {
+    	
+    	allDataTest.setPersons(new ArrayList<>());
+    	
+        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
+        
+        assertEquals(List.of(), datatreatment.getPersons());
+    }
 
-	    @Test
-	    public void updateNoExistingPersonListTest() {
-	    	assertEquals(null, datatreatment.updatePerson(emptyPerson));
-	    	assertEquals(personList, datatreatment.getPersons());
-	    }
+    @Test
+    public void updateNoExistingPersonListTest() {
+    	assertEquals(null, datatreatment.updatePerson(emptyPerson));
+    	assertEquals(personList, datatreatment.getPersons());
+    }
 
-	    @Test
-	    public void updateNullPersonListTest() {
-	    	
-	    	assertEquals(null, datatreatment.updatePerson(null));
-	    	
-	    }
+    @Test
+    public void updateNullPersonListTest() {
+    	
+    	assertEquals(null, datatreatment.updatePerson(null));
+    	
+    }
 
-	    @Test
-	    public void updatePersonNullListTest() {
-	    	
-	    	allDataTest.setPersons(null);
-	    	
-	        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
-	        
-	        assertEquals(List.of(), datatreatment.getPersons());
-	    }
+    @Test
+    public void updatePersonNullListTest() {
+    	
+    	allDataTest.setPersons(List.of());
+    	
+        assertEquals(null, datatreatment.updatePerson(personToUpdateTest));
+        
+        assertEquals(List.of(), datatreatment.getPersons());
+        
+    }
 
-	    @Test
-	    public void deletePersonNoEmptyListTest() {
-	    	
-	        List<Person> personListTest = new ArrayList<>(allDataTest.getPersons());
-	        
-	        personListTest.remove(0);
-	        
-	        assertEquals(true, datatreatment.deletePerson(personToDeleteTest));
-	        
-	        assertEquals(personListTest, datatreatment.getPersons());
-	    }
+    @Test
+    public void deletePersonNoEmptyListTest() {
+    	
+        List<Person> personListTest = new ArrayList<>(allDataTest.getPersons());
+        
+        personListTest.remove(0);
+        
+        assertEquals(true, datatreatment.deletePerson(personToDeleteTest));
+        
+        assertEquals(personListTest, datatreatment.getPersons());
+        
+    }
 
-	    @Test
-	    public void deletePersonEmptyListTest() {
-	    	
-	    	allDataTest.setPersons(new ArrayList<>());
-	    	
-	        assertEquals(false, datatreatment.deletePerson(personToDeleteTest));
-	        
-	        assertEquals(List.of(), datatreatment.getPersons());
-	    }
+    @Test
+    public void deletePersonEmptyListTest() {
+    	
+    	allDataTest.setPersons(new ArrayList<>());
+    	
+        assertEquals(false, datatreatment.deletePerson(personToDeleteTest));
+        
+        assertEquals(List.of(), datatreatment.getPersons());
+        
+    }
 
-	    @Test
-	    public void deleteNoExistingPersonListTest() {
-	    	assertEquals(false, datatreatment.deletePerson(emptyPerson));
-	    	assertEquals(personList, datatreatment.getPersons());
-	    }
+    @Test
+    public void deleteNoExistingPersonListTest() {
+    	
+    	assertEquals(false, datatreatment.deletePerson(emptyPerson));
+    	
+    	assertEquals(personList, datatreatment.getPersons());
+    	
+    }
 
-	    @Test
-	    public void deleteNullPersonListTest() {
-	    	
-	    	assertEquals(false, datatreatment.deletePerson(null));
-	    	
-	        assertEquals(personList, datatreatment.getPersons());
-	    }
+    @Test
+    public void deleteNullPersonListTest() {
+    	
+    	assertEquals(false, datatreatment.deletePerson(null));
+    	
+        assertEquals(List.of(), datatreatment.getPersons());
+        
+    }
 
-	    @Test
-	    public void deletePersonNullListTest() {
-	    	
-	    	allDataTest.setPersons(null);
-	    	
-	        assertEquals(false, datatreatment.deletePerson(personToAddTest));
-	        
-	        assertEquals(List.of(), datatreatment.getPersons());
-	    }
+    @Test
+    public void deletePersonNullListTest() {
+    	
+    	allDataTest.setPersons(List.of());
+    	
+        assertEquals(false, datatreatment.deletePerson(personToAddTest));
+        
+        assertEquals(List.of(), datatreatment.getPersons());
+        
+    }
 
-	    @Test
-	    public void saveMedicalRecordNoEmptyListTest() {
-	    	
-	        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(medicalRecordsList);
-	        
-	        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
-	        
-	        medicalRecordsListTest.add(medicalRecordsToAddTest);
-	        
-	        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void saveMedicalRecordNoEmptyListTest() {
+    	
+        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(medicalRecordsList);
+        
+        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
+        
+        medicalRecordsListTest.add(medicalRecordsToAddTest);
+        
+        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void saveUniqueMedicalRecordEmptyListTest() {
-	    	
-	    	allDataTest.setMedicalrecords(new ArrayList<>());
-	    	
-	        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
-	        
-	        assertEquals(List.of(medicalRecordsToAddTest), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void saveUniqueMedicalRecordEmptyListTest() {
+    	
+    	allDataTest.setMedicalrecords(new ArrayList<>());
+    	
+        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
+        
+        assertEquals(List.of(medicalRecordsToAddTest), datatreatment.getMedicalrecords());
+    
+    }
 
-	    @Test
-	    public void saveExistingMedicalRecordListTest() {
-	    	
-	    	assertEquals(null, datatreatment.saveMedicalRecords(medicalRecordsList.get(0)));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void saveExistingMedicalRecordListTest() {
+    	
+    	assertEquals(null, datatreatment.saveMedicalRecords(medicalRecordsList.get(0)));
+    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+    
+    }
 
-	    @Test
-	    public void saveNullMedicalRecordListTest() {
-	    	
-	    	assertEquals(null, datatreatment.saveMedicalRecords(null));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void saveNullMedicalRecordListTest() {
+    	
+    	assertEquals(null, datatreatment.saveMedicalRecords(null));
+    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+    
+    }
 
-	    @Test
-	    public void saveMedicalRecordNullListTest() {
-	    	allDataTest.setMedicalrecords(null);
-	    	
-	        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
-	        
-	        assertEquals(List.of(medicalRecordsToAddTest), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void saveMedicalRecordNullListTest() {
+    	
+    	allDataTest.setMedicalrecords(null);
+    	
+        assertEquals(medicalRecordsToAddTest, datatreatment.saveMedicalRecords(medicalRecordsToAddTest));
+        
+        assertEquals(List.of(medicalRecordsToAddTest), datatreatment.getMedicalrecords());
+    
+    }
 
-	    @Test
-	    public void updateExistingMedicalRecordNoEmptyListTest() {
-	    	
-	        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(DataForTest.MedicalRecordList());
-	        
-	        assertEquals(medicalRecordsToUpdateTest, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
-	        
-	        medicalRecordsListTest.get(0).setMedications(List.of("doliprane:1000mg"));
-	        medicalRecordsListTest.get(0).setAllergies(List.of());
-	        
-	        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
-	        
-	    }
+    @Test
+    public void updateExistingMedicalRecordNoEmptyListTest() {
+    	
+        List<MedicalRecord> medicalRecordsListTest = new ArrayList<>(DataForTest.MedicalRecordList());
+        
+        assertEquals(medicalRecordsToUpdateTest, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
+        
+        medicalRecordsListTest.get(0).setMedications(List.of("efferalgan:3000mg"));
+        medicalRecordsListTest.get(0).setAllergies(List.of());
+        
+        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void updateMedicalRecordEmptyListTest() {
-	    	
-	    	allDataTest.setMedicalrecords(new ArrayList<>());
-	    	
-	        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
-	        
-	        assertEquals(List.of(), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void updateMedicalRecordEmptyListTest() {
+    	
+    	allDataTest.setMedicalrecords(new ArrayList<>());
+    	
+        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
+        
+        assertEquals(List.of(), datatreatment.getMedicalrecords());
+    
+    }
 
-	    @Test
-	    public void updateNoExistingMedicalRecordListTest() {
-	    	
-	    	assertEquals(null, datatreatment.updateMedicalRecords(emptyMedicalRecord));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void updateNoExistingMedicalRecordListTest() {
+    	
+    	assertEquals(null, datatreatment.updateMedicalRecords(emptyMedicalRecord));
+    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+    }
 
-	    @Test
-	    public void updateNullMedicalRecordListTest() {
-	    	
-	    	assertEquals(null, datatreatment.updateMedicalRecords(null));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void updateNullMedicalRecordListTest() {
+    	
+    	assertEquals(null, datatreatment.updateMedicalRecords(null));
+    	
+    	assertEquals(List.of(), datatreatment.getMedicalrecords());
+    	
+    }
 
-	    @Test
-	    public void updateMedicalRecordNullListTest() {
-	    	allDataTest.setMedicalrecords(null);
-	    	
-	        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
-	    	
-	        assertEquals(List.of(), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void updateMedicalRecordNullListTest() {
+    	
+    	allDataTest.setMedicalrecords(List.of());
+    	
+        assertEquals(null, datatreatment.updateMedicalRecords(medicalRecordsToUpdateTest));
+    	
+        assertEquals(List.of(), datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void deleteMedicalRecordNoEmptyListTest() {
-	        List<MedicalRecord> medicalRecordsListTest = DataForTest.MedicalRecordList();
-	        
-	        assertEquals(true, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
-	        
-	        medicalRecordsListTest.remove(0);
-	        
-	        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void deleteMedicalRecordNoEmptyListTest() {
+        List<MedicalRecord> medicalRecordsListTest = DataForTest.MedicalRecordList();
+        
+        assertEquals(true, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
+        
+        medicalRecordsListTest.remove(0);
+        
+        assertEquals(medicalRecordsListTest, datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void deleteMedicalRecordEmptyListTest() {
-	    	allDataTest.setMedicalrecords(new ArrayList<>());
-	    	
-	        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
-	        
-	        assertEquals(List.of(), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void deleteMedicalRecordEmptyListTest() {
+    	
+    	allDataTest.setMedicalrecords(new ArrayList<>());
+    	
+        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
+        
+        assertEquals(List.of(), datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void deleteNoExistingMedicalRecordListTest() {
-	    	
-	    	assertEquals(false, datatreatment.deleteMedicalRecords(emptyMedicalRecord));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void deleteNoExistingMedicalRecordListTest() {
+    	
+    	assertEquals(false, datatreatment.deleteMedicalRecords(emptyMedicalRecord));
+    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+    	
+    }
 
-	    @Test
-	    public void deleteNullMedicalRecordListTest() {
-	    	
-	    	assertEquals(false, datatreatment.deleteMedicalRecords(null));
-	    	
-	    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void deleteNullMedicalRecordListTest() {
+    	
+    	assertEquals(false, datatreatment.deleteMedicalRecords(null));
+    	
+    	assertEquals(medicalRecordsList, datatreatment.getMedicalrecords());
+    	
+    }
 
-	    @Test
-	    public void deleteMedicalRecordNullListTest() {
-	    	allDataTest.setMedicalrecords(null);
-	    	
-	        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
-	        
-	        assertEquals(List.of(), datatreatment.getMedicalrecords());
-	    }
+    @Test
+    public void deleteMedicalRecordNullListTest() {
+    	
+    	allDataTest.setMedicalrecords(List.of());
+    	
+        assertEquals(false, datatreatment.deleteMedicalRecords(medicalRecordsToDeleteTest));
+        
+        assertEquals(List.of(), datatreatment.getMedicalrecords());
+        
+    }
 
-	    @Test
-	    public void saveFirestationNoEmptyListTest() {
-	        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
-	        
-	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
-	        
-	        firestationsListTest.add(firestationToAdd);
-	        
-	        assertEquals(firestationsListTest, datatreatment.getFirestations());
-	    }
+    @Test
+    public void saveFirestationNoEmptyListTest() {
+    	
+        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
+        
+        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
+        
+        firestationsListTest.add(firestationToAdd);
+        
+        assertEquals(firestationsListTest, datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void saveUniqueFirestationEmptyListTest() {
-	    	allDataTest.setFirestations(new ArrayList<>());
-	    	
-	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
-	        
-	        assertEquals(List.of(firestationToAdd), datatreatment.getFirestations());
-	    }
+    @Test
+    public void saveUniqueFirestationEmptyListTest() {
+    	
+    	allDataTest.setFirestations(new ArrayList<>());
+    	
+        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
+        
+        assertEquals(List.of(firestationToAdd), datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void saveExistingFirestationListTest() {
-	    	
-	    	assertEquals(null, datatreatment.saveFireStation(firestationsList.get(0)));
-	    	
-	    	assertEquals(firestationsList, datatreatment.getFirestations());
-	    }
+    @Test
+    public void saveExistingFirestationListTest() {
+    	
+    	assertEquals(null, datatreatment.saveFireStation(firestationsList.get(0)));
+    	
+    	assertEquals(firestationsList, datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void saveNullFirestationListTest() {
-	    	
-	    	assertEquals(null, datatreatment.saveFireStation(null));
-	    	
-	    	assertEquals(firestationsList, datatreatment.getFirestations());
-	    }
+    @Test
+    public void saveNullFirestationListTest() {
+    	
+    	assertEquals(null, datatreatment.saveFireStation(null));
+    	
+    	assertEquals(firestationsList, datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void saveFirestationNullListTest() {
-	    	allDataTest.setFirestations(null);
-	    	
-	        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
-	        
-	        assertEquals(List.of(firestationToAdd), datatreatment.getFirestations());
-	    }
+    @Test
+    public void saveFirestationNullListTest() {
+    	
+    	allDataTest.setFirestations(null);
+    	
+        assertEquals(firestationToAdd, datatreatment.saveFireStation(firestationToAdd));
+        
+        assertEquals(List.of(firestationToAdd), datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void deleteFirestationNoEmptyListTest() {
-	    	
-	        System.out.println(firestationsList);
-	        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
-	        System.out.println(firestationsList);
-	        
-	        assertEquals(true, datatreatment.deleteFireStation(firestationToDelete));
-	        
-	        System.out.println(firestationsList);
-	        firestationsListTest.remove(0);
-	        
-	        System.out.println("1" + firestationsList);
-	        assertEquals(datatreatment.getFirestations(), firestationsListTest);
-	    }
+    @Test
+    public void deleteFirestationNoEmptyListTest() {
+    	
+        List<FireStation> firestationsListTest = new ArrayList<>(allDataTest.getFirestations());
+        
+        assertEquals(true, datatreatment.deleteFireStation(firestationToDelete));
+        
+        firestationsListTest.remove(0);
+        
+        assertEquals(datatreatment.getFirestations(), firestationsListTest);
+    }
 
-	    @Test
-	    public void deleteFirestationEmptyListTest() {
-	    	allDataTest.setFirestations(new ArrayList<>());
-	    	
-	        assertEquals(datatreatment.deleteFireStation(firestationToDelete), false);
-	        
-	        assertEquals(datatreatment.getFirestations(), List.of());
-	    }
+    @Test
+    public void deleteFirestationEmptyListTest() {
+    	
+    	allDataTest.setFirestations(new ArrayList<>());
+    	
+        assertEquals(datatreatment.deleteFireStation(firestationToDelete), false);
+        
+        assertEquals(datatreatment.getFirestations(), List.of());
+    }
 
-	    @Test
-	    public void deleteNoExistingFirestationListTest() {
-	    	
-	    	assertEquals(datatreatment.deleteFireStation(emptyFirestation), false);
-	    	
-	    	assertEquals(datatreatment.getFirestations(), firestationsList);
-	    }
+    @Test
+    public void deleteNoExistingFirestationListTest() {
+    	
+    	assertEquals(datatreatment.deleteFireStation(emptyFirestation), false);
+    	
+    	assertEquals(datatreatment.getFirestations(), firestationsList);
+    }
 
-	    @Test
-	    public void deleteNullFirestationListTest() {
-	    	
-	    	assertEquals(false, datatreatment.deleteFireStation(null));
-	    	
-	    	assertEquals(firestationsList, datatreatment.getFirestations());
-	    }
+    @Test
+    public void deleteNullFirestationListTest() {
+    	
+    	assertEquals(false, datatreatment.deleteFireStation(null));
+    	
+    	assertEquals(firestationsList, datatreatment.getFirestations());
+    }
 
-	    @Test
-	    public void deleteFirestationNullListTest() {
-	    	allDataTest.setFirestations(null);
-	    	
-	        assertEquals(false, datatreatment.deleteFireStation(firestationToDelete));
-	        
-	        assertEquals(List.of(), datatreatment.getFirestations());
-	    }
+    @Test
+    public void deleteFirestationNullListTest() {
+    	
+    	allDataTest.setFirestations(null);
+    	
+        assertEquals(false, datatreatment.deleteFireStation(firestationToDelete));
+        
+        assertEquals(List.of(), datatreatment.getFirestations());
+    }
 
+	    
 }
