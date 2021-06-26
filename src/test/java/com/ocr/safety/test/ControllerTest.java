@@ -1,46 +1,67 @@
 package com.ocr.safety.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ocr.safety.controller.SafetyController;
 import com.ocr.safety.model.AllData;
 import com.ocr.safety.model.ChildAlert;
+import com.ocr.safety.model.Fire;
 import com.ocr.safety.model.FireStation;
+import com.ocr.safety.model.FireStationPlus;
 import com.ocr.safety.model.MedicalRecord;
 import com.ocr.safety.model.Person;
 import com.ocr.safety.repository.DataTreatment;
+import com.ocr.safety.service.FirestationService;
+import com.ocr.safety.service.MedicalrecordService;
+import com.ocr.safety.service.PersonService;
 
 
-@SpringJUnitConfig
+//@SpringJUnitConfig
+//@WebMvcTest(SafetyController.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
-@WebMvcTest(SafetyController.class)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class ControllerTest {
 	
-	@Autowired
+	@MockBean
 	private DataTreatment dataTreatment;
+	
+	@MockBean
+	private FirestationService firestationService;
+	
+	@MockBean
+	private MedicalrecordService medicalrecordService;
+	
+	@MockBean
+	private PersonService personService;
 	
 	@Autowired
 	private MockMvc mvc;
 	
-	@Autowired
+	@MockBean
     private ObjectMapper objectMapper;
-	
 	
 	public static List<Person> personList = DataForTest.PersonList();
 
@@ -48,144 +69,179 @@ public class ControllerTest {
 
     public static List<MedicalRecord> medicalRecordsList = DataForTest.MedicalRecordList();
 
-    public static AllData allData = new AllData(personList, medicalRecordsList, firestationsList);
+    public AllData allDataTest;
 	
-	@Before
+	@BeforeEach
 	public void setup() {
-		 allData = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
+		
+		allDataTest = new AllData(DataForTest.PersonList(), DataForTest.MedicalRecordList()
 				, DataForTest.FirestationList());
-		dataTreatment.setAlldata(allData);
+		 
+		dataTreatment.setAlldata(allDataTest);
+		
 	}
 	
-//	@Test
-//  public void getFirestationByIdTest() throws Exception {
-//		
-//        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/firestation?stationNumber={stationNumber}", 3).accept(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-//        
-//        FireStationPlus fireStationPlusResult = objectMapper.readValue(result.getResponse().getContentAsString(), FireStationPlus.class);
-//        assertThat(fireStationPlusResult).isEqualTo(FireStationServiceTest.getFirestationsAreaControllerTest());
-//	}
+	@AfterEach
+	public void endUp() {
+		
+	}
+	
+	@Test
+	public void getFirestationByStationIdTest() throws Exception {
+		
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/firestation?stationNumber={stationNumber}", 3)
+        		.accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        
+        FireStationPlus fireStationPlusResult = objectMapper.readValue(result.getResponse()
+        		.getContentAsString(), FireStationPlus.class);
+        
+        assertThat(fireStationPlusResult).isEqualTo(FireStationServiceTest.getFirestationsAreaControllerTest());
+        
+	}
 	
 	@Test
     public void getFirestationByIdNoFirestationFoundTest() throws Exception {
+		
         mvc.perform(MockMvcRequestBuilders.get("/firestation?stationNumber={stationNumber}", 1)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No Firestation(s) found for number : [1] !", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string(""));
         
         
     }
 	
 	@Test
     public void getChildAlertTest() throws Exception {
+		
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/childAlert?address={address}", "1509 Culver St")
-                .accept(MediaType.APPLICATION_JSON))
+        		.contentType(MediaType.APPLICATION_JSON)
+        		.accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         
-        ChildAlert childAlertResult = objectMapper.readValue(result.getResponse().getContentAsString(), ChildAlert.class);
-        assertThat(childAlertResult).isEqualTo(PersonServiceTest.getChildAlertTest());
+        
+        assertEquals(PersonServiceTest.getChildAlertTest(), objectMapper.readValue(result.getResponse().
+        		getContentAsString(StandardCharsets.UTF_8), ChildAlert.class));
+        
 	}
 	
 	@Test
     public void getChildAlertNoFoundTest() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/childAlert?address={address}", "1 ter des gemeaux")
+		
+        mvc.perform(MockMvcRequestBuilders.get("/childAlert?address={address}", "1 avenue papin")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No child(ren) found for address : 1 ter des gemeaux !", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+                	
     }
 	
-//	@Test
-//    public void getPhoneAlertFromFirestationsTest() throws Exception {
-//        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/phoneAlert?firestation={firestation_number}", 2)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-//        
-//        List<String> phoneNumberListResult = objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
-//        assertThat(phoneNumberListResult).isEqualTo(FireStationServiceTest.getPhoneAlertListTest());
-//        
-//	}
+	@Test
+	public void getPhoneAlertFromFirestationsTest() throws Exception {
+	
+		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/phoneAlert?firestation={firestation_number}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        
+		List<String> phoneNumberListResult = objectMapper.readValue(result.getResponse()
+				.getContentAsString(), List.class);
+   
+		assertThat(phoneNumberListResult).isEqualTo(FireStationServiceTest.getPhoneAlertListTest());
+        
+	}
 	
 	
 	@Test
     public void getPhoneAlertFromFirestationsNoFirestationFoundTest() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/phoneAlert?firestation={firestation_number}", 1)
+		
+        mvc.perform(MockMvcRequestBuilders.get("/phoneAlert?firestation={firestation_number}", 5)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No Firestation(s) found for number : [1] !", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string("[]"));
     }
 	
-//	@Test
-//    public void getCompletePersonByAddressIfFireTest() throws Exception {
-//        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/fire?address={address}", "1509 Culver St")
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-//        
-//        Fire medicalRecordResult = objectMapper.readValue(result.getResponse().getContentAsString(), Fire.class);
-//        assertThat(medicalRecordResult).isEqualTo(FireStationServiceTest.getCompletePersonListFireStationNumberThreeTest());
-//        
-//	}
+	@Test
+	public void getCompletePersonByAddressIfFireTest() throws Exception {
+		
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/fire?address={address}", "1509 Culver St")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        
+        Fire medicalRecordResult = objectMapper.readValue(result.getResponse().getContentAsString(), Fire.class);
+        
+        assertThat(medicalRecordResult).isEqualTo(FireStationServiceTest
+        		.getCompletePersonListFireStationNumberThreeTest());
+        
+	}
 	
 	
 	@Test
-    public void getompletePersonByAddressIfFireNoPersonFoundTest() throws Exception {
+    public void getCompletePersonByAddressIfFireNoPersonFoundTest() throws Exception {
+		
         mvc.perform(MockMvcRequestBuilders.get("/fire?address={address}", "1 ter des gemeaux")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No person(s) found for address : 1 ter des gemeaux !", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string(""));
+        
     }
 	
-//	@Test
-//    public void getCompletePersonByStationsListTest() throws Exception {
-//        mvc.perform(MockMvcRequestBuilders.get("/flood/stations?stations={list of station numbers}", new int[]{3, 2})
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//    }
+	@Test
+    public void getCompletePersonByStationsListTest() throws Exception {
+		
+        mvc.perform(MockMvcRequestBuilders.get("/flood/stations?stations={list of station numbers}", new int[]{3, 2})
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 	
 	
 	@Test
     public void getCompletePersonByItsNamesNoPersonFoundFromFirstNameAndNameTest() throws Exception {
+		
         mvc.perform(MockMvcRequestBuilders.get("/personInfo?firstName={firstName}&lastName={LastName}", "Jean", "Boyd")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No person named : Jean Boyd found!", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string("[]"));
+        
     }
 	
 	@Test
     public void getCompletePersonByItsNamesNoPersonFoundFromNameTest() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/personInfo?firstName={firstName}&lastName={LastName}", null, "Paulo")
+		
+        mvc.perform(MockMvcRequestBuilders.get("/personInfo?firstName={firstName}&lastName={LastName}", null, "Theo")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No person named : Paulo found!", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string("[]"));
+        
     }
 	
 	@Test
     public void getEmailsFromCityTest() throws Exception {
+		
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/communityEmail?city={city}", "Culver")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         
         List<String> emailsResult = objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
+        
         assertThat(emailsResult).isEqualTo(PersonServiceTest.getEmailsFromCityList());
         
 	}
 	
 	
 	@Test
-    public void getEmailsFromCityNoPersonFoundTest() throws Exception {
+	public void getEmailsFromCityNoPersonFoundTest() throws Exception {
+		
         mvc.perform(MockMvcRequestBuilders.get("/communityEmail?city={city}", "London")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(mvcResult -> Assert.assertEquals("No person(s) found!", mvcResult.getResolvedException().getMessage()));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string(""));
     }
 	
 	@Test
-    public void savePersonTest() throws Exception {
+	public void savePersonTest() throws Exception {
 		
         String jsonPersonToAdd = objectMapper.writeValueAsString(DataForTest.getPersonToAddTest());
 
@@ -196,12 +252,15 @@ public class ControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         
-        Person personResult = objectMapper.readValue(result.getResponse().getContentAsString(), Person.class);
+        Person personResult = objectMapper.readValue(result.getResponse()
+        		.getContentAsString(), Person.class);
+        
         assertThat(personResult).isEqualTo(DataForTest.getPersonToAddTest());
+        
 	}
 	
 	@Test
-    public void updatePersonTest() throws Exception {
+	public void updatePersonTest() throws Exception {
 		
         String jsonPersonToUpdate = objectMapper.writeValueAsString(DataForTest.getPersonToUpdateTest());
 
@@ -212,12 +271,15 @@ public class ControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         
-        Person personResult = objectMapper.readValue(result.getResponse().getContentAsString(), Person.class);
+        Person personResult = objectMapper.readValue(result.getResponse()
+        		.getContentAsString(), Person.class);
+        
         assertThat(personResult).isEqualTo(DataForTest.getPersonToUpdateTest());
+        
 	}
 	
 	@Test
-    public void deletePersonTest() throws Exception {
+	public void deletePersonTest() throws Exception {
 		
         String jsonPersonToDelete = objectMapper.writeValueAsString(DataForTest.getPersonToDeleteTest());
 
@@ -230,7 +292,7 @@ public class ControllerTest {
     }
 	
 	@Test
-    public void saveMedicalRecordTest() throws Exception {
+	public void saveMedicalRecordTest() throws Exception {
 		
 		String jsonMedicalRecordToAdd = objectMapper.writeValueAsString(DataForTest.getMedicalRecordToAddTest());
 
@@ -241,8 +303,11 @@ public class ControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         
-        MedicalRecord medicalRecordResult = objectMapper.readValue(result.getResponse().getContentAsString(), MedicalRecord.class);
+        MedicalRecord medicalRecordResult = objectMapper.readValue(result.getResponse()
+        		.getContentAsString(), MedicalRecord.class);
+        
         assertThat(medicalRecordResult).isEqualTo(DataForTest.getMedicalRecordToAddTest());
+        
 	}
 	
 	 @Test
@@ -257,7 +322,9 @@ public class ControllerTest {
 	                .andExpect(MockMvcResultMatchers.status().isOk())
 	                .andReturn();
 	        
-	        MedicalRecord medicalRecordResult = objectMapper.readValue(result.getResponse().getContentAsString(), MedicalRecord.class);
+	        MedicalRecord medicalRecordResult = objectMapper.readValue(result.getResponse()
+	        		.getContentAsString(), MedicalRecord.class);
+	        
 	        assertThat(medicalRecordResult).isEqualTo(DataForTest.getMedicalRecordToUpdateTest());
 	        
 	 }
@@ -265,7 +332,8 @@ public class ControllerTest {
 	 @Test
 	 public void deleteMedicalRecordTest() throws Exception {
 		 
-	        String jsonMedicalRecordToDelete = objectMapper.writeValueAsString(DataForTest.getMedicalRecordToDeleteTest());
+	        String jsonMedicalRecordToDelete = objectMapper.writeValueAsString(DataForTest
+	        		.getMedicalRecordToDeleteTest());
 
 	        mvc.perform(MockMvcRequestBuilders.delete("/medicalRecord")
 	        		.content(jsonMedicalRecordToDelete)
@@ -274,7 +342,7 @@ public class ControllerTest {
 	                .andExpect(MockMvcResultMatchers.status().isOk())
 	                .andExpect(MockMvcResultMatchers.content().string("true"))
 	                .andReturn();
-	    }
+	 }
 	 
 	 @Test
 	 public void saveFirestationTest() throws Exception {
@@ -288,8 +356,11 @@ public class ControllerTest {
 	                .andExpect(MockMvcResultMatchers.status().isOk())
 	                .andReturn();
 	        
-	        FireStation firestationResult = objectMapper.readValue(result.getResponse().getContentAsString(), FireStation.class);
+	        FireStation firestationResult = objectMapper.readValue(result.getResponse()
+	        		.getContentAsString(), FireStation.class);
+	        
 	        assertThat(firestationResult).isEqualTo(DataForTest.getFireStationToAdd());
+	        
 	 }
 	 
 	 @Test
@@ -302,9 +373,9 @@ public class ControllerTest {
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON))
 	                .andExpect(MockMvcResultMatchers.status().isOk())
-	                .andExpect(MockMvcResultMatchers.content().string("true"))
+	                .andExpect(MockMvcResultMatchers.content().string("false"))
 	                .andReturn();
-	  }
+	 }
 
 	
 

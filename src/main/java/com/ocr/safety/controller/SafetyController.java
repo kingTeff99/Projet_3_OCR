@@ -42,14 +42,14 @@ public class SafetyController {
 	private MedicalrecordService medicalrecordService;
 	
 	//Display all data present in Json file
-	@GetMapping(value = "/")
+	@GetMapping(value = "/", produces  ={"application/json; charset=UTF-8"})
 	public  AllData displayData() {
 		
 		return dataTreatment.loadFile();
 	}
 	
 	//URL1 FONCTIONNE!!!
-	@GetMapping(value = "/firestation")
+	@GetMapping(value = "/firestation", produces ={"application/json; charset=UTF-8"})
 	public FireStationPlus getPersonByItsStationNumber(@RequestParam int stationNumber) {
 		
 		return firestationService.getPersonFromFireStationArea(stationNumber);
@@ -57,14 +57,14 @@ public class SafetyController {
 	}
 	
 	//URL2 FONCTIONNE!!!
-	@GetMapping(value = "/childAlert")
+	@GetMapping(value = "/childAlert", produces ={"application/json; charset=UTF-8"})
 	public ChildAlert getChildrenByAddress(@RequestParam String address) {
 		
 		return personService.giveChildAlertByAddress(address);
 	}
 	
 	//URL3 FONCTIONNE!!!
-	@GetMapping(value = "/phoneAlert")
+	@GetMapping(value = "/phoneAlert", produces ={"application/json; charset=UTF-8"})
 	public List<String> getPhoneNumbersByItsStationNumber(@RequestParam int firestation) {
 			
 		return firestationService.getPhoneNumberByFireStationNumber(firestation);
@@ -72,7 +72,7 @@ public class SafetyController {
 	}
 	
 	//URL4 FONCTIONNE!!!
-	@GetMapping(value = "/fire")
+	@GetMapping(value = "/fire", produces ={"application/json; charset=UTF-8"})
 	public Fire getAllPersonsByTheirAddress(@RequestParam String address) {
 				
 		return firestationService.getPersonsByItsAddress(address);
@@ -80,7 +80,7 @@ public class SafetyController {
 	}
 	
 	//URL5 FONCTIONNE!!!
-	@GetMapping(value = "/flood/stations")
+	@GetMapping(value = "/flood/stations", produces ={"application/json; charset=UTF-8"})
 	public List<Fire> getAllPersonsLiveInThisArea(@RequestParam List<Integer> stations) {
 					
 		return firestationService.getPersonsByItsStationNumberArea(stations);
@@ -95,7 +95,7 @@ public class SafetyController {
 	}
 	
 	//URL6 FONCTIONNE!!!
-	@GetMapping(value = "/personInfo")
+	@GetMapping(value = "/personInfo", produces ={"application/json; charset=UTF-8"})
 	public List<CompletePerson> getPersonsFromNames(@RequestParam(value = "firstName", required = false) String firstName
 			, @RequestParam(value = "lastName", required = true) String lastName) {
 						
@@ -104,7 +104,7 @@ public class SafetyController {
 	}
 		
 	//URL7 FONCTIONNE!!!
-	@GetMapping(value = "/communityEmail")
+	@GetMapping(value = "/communityEmail", produces ={"application/json; charset=UTF-8"})
 	public CommunityEmail getEmailsFromTheCity(@RequestParam String city) {
 				
 		return personService.getCommunityEmailPersonsByCity(city);
@@ -114,28 +114,28 @@ public class SafetyController {
 	
 	//---------------------------------------------------------------------------------------
 	
-	@GetMapping(value = "/person")
+	@GetMapping(value = "/person", produces ={"application/json; charset=UTF-8"})
 	public List<Person> listeDesPersonnes() {
 		
 		return dataTreatment.getPersons();
 		
 	}
 	
-	@PostMapping(value = "/person")
+	@PostMapping(value = "/person", produces ={"application/json; charset=UTF-8"})
     public Person addPerson(@RequestBody Person person) {
 		
         return personService.savePerson(person);
         
     }
 	
-	@PutMapping(value = "/person")
+	@PutMapping(value = "/person", produces ={"application/json; charset=UTF-8"})
     public Person updatePerson(@RequestBody Person person) {
 		
         return personService.updatePerson(person);
         
     }
 	
-	@DeleteMapping(value = "/person")
+	@DeleteMapping(value = "/person", produces ={"application/json; charset=UTF-8"})
     public boolean deletePerson(@RequestBody Person person) {
 		
         return personService.deletePerson(person);
@@ -144,7 +144,7 @@ public class SafetyController {
 	
 	//---------------------------------------------------------------------------------------
 	
-	@GetMapping(value = "/medicalRecord")
+	@GetMapping(value = "/medicalRecord", produces ={"application/json; charset=UTF-8"})
 	public List<MedicalRecord> medicalInformations() {
 		
 		return dataTreatment.getMedicalrecords();
@@ -152,7 +152,7 @@ public class SafetyController {
 	}
 	
 	
-	@PostMapping(value = "/medicalRecord")
+	@PostMapping(value = "/medicalRecord", produces ={"application/json; charset=UTF-8"})
     public MedicalRecord addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
 		
         return medicalrecordService.saveMedicalRecords(medicalRecord);
@@ -160,7 +160,7 @@ public class SafetyController {
     }
 	
 	
-	@PutMapping(value = "/medicalRecord")
+	@PutMapping(value = "/medicalRecord", produces ={"application/json; charset=UTF-8"})
     public MedicalRecord updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
 		
         return medicalrecordService.updateMedicalRecords(medicalRecord);
@@ -168,7 +168,7 @@ public class SafetyController {
     }
 	
 	
-	@DeleteMapping(value = "/medicalRecord")
+	@DeleteMapping(value = "/medicalRecord", produces ={"application/json; charset=UTF-8"})
     public boolean deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
 		
         return medicalrecordService.deleteMedicalRecords(medicalRecord);
@@ -179,7 +179,7 @@ public class SafetyController {
 	//---------------------------------------------------------------------------------------
 	
 
-	@PostMapping(value = "/firestation")
+	@PostMapping(value = "/firestation", produces ={"application/json; charset=UTF-8"})
     public FireStation addFireStation(@RequestBody FireStation firestation) {
 		
         return firestationService.saveFireStation(firestation);
@@ -192,7 +192,7 @@ public class SafetyController {
 //        return firestationService.updateFireStation(firestation);
 //    }
 	
-	@DeleteMapping(value = "/firestation")
+	@DeleteMapping(value = "/firestation", produces ={"application/json; charset=UTF-8"})
     public boolean deleteFireStation(@RequestBody FireStation firestation) {
 		
         return firestationService.deleteFireStation(firestation);
